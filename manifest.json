@@ -1,0 +1,14 @@
+{
+  "name": "uni-search",
+  "version": "1.0",
+  "description": "Personal search tool",
+  "permissions": ["webRequest", "webRequestBlocking", "https://*/", "wss://*/"],
+  "background": {
+    "scripts": ["scripts.js"],
+    "persistent": true
+  },
+  "manifest_version": 2,
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}
