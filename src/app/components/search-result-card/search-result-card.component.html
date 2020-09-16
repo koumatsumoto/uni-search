@@ -1,4 +1,16 @@
-<a class="card" target="_blank" rel="noopener" [href]="data.link">
-  <p class="head">{{ data.title }}</p>
-  <p class="body">{{ data.description }}</p>
+<a target="_blank" rel="noopener" [href]="data.link">
+  <mat-card class="card-layout">
+    <div class="header">
+      <div class="row-logo-and-domain">
+        <div class="small-avatar" [ngStyle]="{ 'background-image': 'url(/assets/google_icon.svg)' }"></div>
+        <div class="text-domain">example.com</div>
+      </div>
+      <div class="row-title">
+        <mat-card-title class="small-title">{{ data.title }}</mat-card-title>
+      </div>
+    </div>
+    <mat-card-content class="layout-content">
+      <p class="small-description">{{ data.description }}</p>
+    </mat-card-content>
+  </mat-card>
 </a>
