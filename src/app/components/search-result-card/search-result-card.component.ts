@@ -6,6 +6,6 @@ import { emptyResult, SearchResult } from '../../services/google-search-getter.s
   templateUrl: './search-result-card.component.html',
   styleUrls: ['./search-result-card.component.scss'],
 })
-export class SearchResultCardComponent implements OnInit {
+export class SearchResultCardComponent {
   @Input() data: SearchResult = emptyResult;
 }
