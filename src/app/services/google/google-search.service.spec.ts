@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GoogleSearchGetterService } from './google-search-getter.service';
+import { GoogleSearchService } from './google-search.service';
 
 describe('GoogleSearchGetterService', () => {
-  let service: GoogleSearchGetterService;
+  let service: GoogleSearchService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GoogleSearchGetterService);
+    service = TestBed.inject(GoogleSearchService);
   });
 
   it('should be created', () => {
