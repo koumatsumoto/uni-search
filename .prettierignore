@@ -1,2 +1,5 @@
 dist
 node_modules
+
+# long html text for testing
+*.html.ts

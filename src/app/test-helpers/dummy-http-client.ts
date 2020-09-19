@@ -1,4 +1,4 @@
-import { html } from './dummy-google-search-response';
+import { html } from './dummy-google-search-response.html';
 import { of } from 'rxjs';
 
 export class DummyHttpClient {

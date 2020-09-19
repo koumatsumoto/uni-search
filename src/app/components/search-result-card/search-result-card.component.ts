@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { emptyResult, SearchResult } from '../../services/google-search-getter.service';
+import { emptyResult, SearchResult } from '../../services/google/extract';
 
 @Component({
   selector: 'app-search-result-card',

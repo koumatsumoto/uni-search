@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleSearchGetterService, SearchResult } from './services/google-search-getter.service';
+import { GoogleSearchService } from './services/google/google-search.service';
+import { SearchResult } from './services/google/extract';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ export class AppComponent implements OnInit {
   title = 'uni-search';
   searchResults: SearchResult[] = [];
 
-  constructor(private readonly googleSearchGetterService: GoogleSearchGetterService) {}
+  constructor(private readonly googleSearchGetterService: GoogleSearchService) {}
 
   ngOnInit() {
     // to develop css
