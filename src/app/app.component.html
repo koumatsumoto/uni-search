@@ -24,12 +24,16 @@
     <app-search-box (submitValue)="onSearchBoxSubmit($event)"></app-search-box>
   </div>
 
-  <div class="card-container" *ngIf="searchResults.length">
-    <app-search-result-card *ngFor="let data of searchResults" [data]="data"></app-search-result-card>
+  <div class="layout-main-viewer" *ngIf="searchResults.length">
+    <div class="layout-search-result-container">
+      <app-search-result-card *ngFor="let data of searchResults" [data]="data" (clicked)="selectData($event)"></app-search-result-card>
+    </div>
+    <div class="layout-search-result-viewers">
+      <app-search-result-viewer [data]="selectedData"></app-search-result-viewer>
+    </div>
   </div>
 
-  <!-- Links -->
-  <div class="card-container">
+  <div class="layout-circle-links">
     <a class="circle-link" title="Animations" href="https://angular.io/guide/animations" target="_blank" rel="noopener">
       <svg id="Group_20" data-name="Group 20" xmlns="http://www.w3.org/2000/svg" width="21.813" height="23.453" viewBox="0 0 21.813 23.453">
         <path

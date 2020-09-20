@@ -4,7 +4,7 @@
   "description": "Personal search tool",
   "permissions": ["webRequest", "webRequestBlocking", "https://*/", "wss://*/"],
   "background": {
-    "scripts": ["scripts.js"],
+    "scripts": ["background.js"],
     "persistent": true
   },
   "manifest_version": 2,

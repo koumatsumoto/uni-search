@@ -34,7 +34,25 @@
   align-items: center;
 }
 
-.card-container {
+.layout-main-viewer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 48px;
+  width: 100%;
+}
+
+.layout-search-result-container {
+  flex: 0;
+}
+
+.layout-search-result-viewers {
+  flex: 1;
+  display: flex;
+}
+
+.layout-circle-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
