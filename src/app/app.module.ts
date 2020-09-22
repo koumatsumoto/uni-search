@@ -12,9 +12,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { SearchResultViewerComponent } from './components/search-result-viewer/search-result-viewer.component';
 import { environment } from '../environments/environment';
+import { HeaderComponent } from './components/header/header.component';
+import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 
 @NgModule({
-  declarations: [AppComponent, SearchBoxComponent, SearchResultCardComponent, SearchResultViewerComponent],
+  declarations: [
+    AppComponent,
+    SearchBoxComponent,
+    SearchResultCardComponent,
+    SearchResultViewerComponent,
+    HeaderComponent,
+    DemoCircleIndicatorsComponent,
+  ],
   imports: [BrowserModule, FormsModule, ReactiveFormsModule, AppRoutingModule, HttpClientModule, BrowserAnimationsModule, MatCardModule],
   providers: [
     {
