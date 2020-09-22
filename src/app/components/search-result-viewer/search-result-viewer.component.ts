@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SearchResult } from '../../services/google/extract';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -7,10 +7,8 @@ import { DomSanitizer } from '@angular/platform-browser';
   templateUrl: './search-result-viewer.component.html',
   styleUrls: ['./search-result-viewer.component.scss'],
 })
-export class SearchResultViewerComponent implements OnInit {
+export class SearchResultViewerComponent {
   @Input() data: SearchResult | null = null;
 
   constructor(public sanitizer: DomSanitizer) {}
-
-  ngOnInit() {}
 }
