@@ -12,7 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { SearchResultViewerComponent } from './components/search-result-viewer/search-result-viewer.component';
 import { environment } from '../environments/environment';
-import { HeaderComponent } from './components/header/header.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 
 @NgModule({
@@ -21,7 +21,7 @@ import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicato
     SearchBoxComponent,
     SearchResultCardComponent,
     SearchResultViewerComponent,
-    HeaderComponent,
+    ToolbarComponent,
     DemoCircleIndicatorsComponent,
   ],
   imports: [BrowserModule, FormsModule, ReactiveFormsModule, AppRoutingModule, HttpClientModule, BrowserAnimationsModule, MatCardModule],
