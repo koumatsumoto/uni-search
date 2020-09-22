@@ -5,7 +5,12 @@
 <main class="layout-main" role="main">
   <ng-container *ngIf="searchResults.length">
     <div class="layout-search-result-list app-scrollbar-simple">
-      <app-search-result-card *ngFor="let data of searchResults" [data]="data" (clicked)="selectData($event)"></app-search-result-card>
+      <app-search-result-card
+        *ngFor="let data of searchResults"
+        [data]="data"
+        (clicked)="selectData($event)"
+        class="layout-search-result-list-item"
+      ></app-search-result-card>
     </div>
     <div class="layout-search-result-viewers app-scrollbar-simple">
       <app-search-result-viewer [data]="selectedData"></app-search-result-viewer>

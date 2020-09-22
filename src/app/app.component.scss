@@ -45,6 +45,18 @@ $width-main-right-column-max: calc(100vh - #{$width-main-left-column-max});
   overflow: auto;
 }
 
+.layout-search-result-list-item {
+  margin: 8px 4px 8px 6px;
+
+  &:first-of-type {
+    margin-top: 8px;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
 .layout-search-result-viewers {
   flex: 1;
   display: flex;
