@@ -37,7 +37,7 @@ const createElement = (html: string) => {
   return div;
 };
 
-export const extractResult = (html: string): SearchResult[] => {
+export const extractResult = (html: string) => {
   const div = createElement(html);
   try {
     document.body.appendChild(div);
@@ -45,12 +45,25 @@ export const extractResult = (html: string): SearchResult[] => {
     throw new Error('InvalidHtmlError');
   }
 
+  const success: SearchResult[] = [];
+  const error: Error[] = [];
+  const ignore: { reason: string }[] = [];
   try {
-    const items = div.querySelectorAll<HTMLElement>(googleSearchResultSelectors.item);
+    const items = Array.from(div.querySelectorAll<HTMLElement>(googleSearchResultSelectors.item));
+    items.forEach((item, index) => {
+      try {
+        if (item.classList.length > 1) {
+          ignore.push({ reason: `index:${index} is many classes in addition to .g` });
+          return;
+        }
 
-    return Array.from(items).map((item) => extract(item));
-  } catch {
-    throw new Error('UnexpectedStructError');
+        success.push(extract(item));
+      } catch (e) {
+        error.push(new Error(`UnexpectedModel: { index:${index}, message: ${e.message}`));
+      }
+    });
+
+    return { success, error, ignore };
   } finally {
     document.body.removeChild(div);
   }
