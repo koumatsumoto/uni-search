@@ -29,6 +29,8 @@ export class AppComponent implements OnInit {
   }
 
   async onSearchBoxSubmit(text: string) {
+    console.log('[dev]', text);
+
     this.searchResults = await this.googleSearchGetterService.search(text);
   }
 }
