@@ -1,16 +1,12 @@
-<div (click)="clicked.emit(data)">
-  <mat-card class="card-layout">
-    <div class="header">
-      <div class="row-logo-and-domain">
-        <div class="small-avatar" [ngStyle]="{ 'background-image': 'url(/assets/google_icon.svg)' }"></div>
-        <div class="text-domain">{{ data.domain }}</div>
-      </div>
-      <div class="row-title">
-        <mat-card-title class="small-title">{{ data.title }}</mat-card-title>
-      </div>
-    </div>
-    <mat-card-content class="layout-content">
-      <p class="small-description">{{ data.description }}</p>
-    </mat-card-content>
-  </mat-card>
+<div class="header">
+  <div class="row-logo-and-domain">
+    <div class="small-avatar" [ngStyle]="{ 'background-image': 'url(/assets/google_icon.svg)' }"></div>
+    <div class="text-domain">{{ data.domain }}</div>
+  </div>
+  <div class="row-title">
+    <h3 class="text-title">{{ data.title }}</h3>
+  </div>
+</div>
+<div class="layout-content">
+  <p class="text-description">{{ data.description }}</p>
 </div>

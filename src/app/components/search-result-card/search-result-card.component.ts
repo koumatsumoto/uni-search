@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { emptyResult, SearchResult } from '../../services/google/extract';
 
 @Component({
@@ -9,4 +9,7 @@ import { emptyResult, SearchResult } from '../../services/google/extract';
 export class SearchResultCardComponent {
   @Input() data: SearchResult = emptyResult;
   @Output() clicked = new EventEmitter<SearchResult>();
+  @HostListener('click') click() {
+    this.clicked.emit(this.data);
+  }
 }
