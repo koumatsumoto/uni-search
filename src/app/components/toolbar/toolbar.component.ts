@@ -6,9 +6,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
-  @Output() searchSubmitted = new EventEmitter<string>();
+  @Output() commandSubmitted = new EventEmitter<string>();
 
   async onSearchBoxSubmit(text: string) {
-    this.searchSubmitted.emit(text);
+    this.commandSubmitted.emit(text);
   }
 }
