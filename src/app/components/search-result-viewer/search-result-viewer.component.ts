@@ -1,6 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { SearchResult } from '../../services/google/extract';
-import { DomSanitizer } from '@angular/platform-browser';
+
+const createIframe = (src: string) => {
+  const iframe = document.createElement('iframe');
+  iframe.src = src;
+  iframe.style.flex = '1';
+  iframe.style.border = 'none';
+
+  return iframe;
+};
 
 @Component({
   selector: 'app-search-result-viewer',
@@ -8,7 +16,35 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./search-result-viewer.component.scss'],
 })
 export class SearchResultViewerComponent {
-  @Input() data: SearchResult | null = null;
+  private currentSource = '';
+  private iframes = new Map<string, HTMLIFrameElement>();
 
-  constructor(public sanitizer: DomSanitizer) {}
+  @Input() set data(newData: SearchResult | null) {
+    // onInit or invalid data
+    if (newData === null) {
+      return;
+    }
+    // no change
+    if (newData.href === this.currentSource) {
+      return;
+    }
+    // changed
+    const currentIframe = this.iframes.get(this.currentSource);
+    if (currentIframe) {
+      currentIframe.style.display = 'none';
+    }
+
+    const toView = this.iframes.get(newData.href);
+    this.currentSource = newData.href;
+    // use cache if exists
+    if (toView) {
+      toView.style.display = 'block';
+    } else {
+      const iframe = createIframe(newData.href);
+      this.elementRef.nativeElement.appendChild(iframe);
+      this.iframes.set(newData.href, iframe);
+    }
+  }
+
+  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 }
