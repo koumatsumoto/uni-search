@@ -1,4 +1,5 @@
 import { googleSearchResultSelectors } from './dom-selector';
+import { findOrFail } from '../../../libs/dom';
 
 export type SearchResult = {
   readonly domain: string;
@@ -13,15 +14,6 @@ export const emptyResult: SearchResult = {
   description: '',
   href: '',
 } as const;
-
-const findOrFail = <T extends Element = Element>(selector: string, element: HTMLElement) => {
-  const result = element.querySelector(selector);
-  if (!result) {
-    throw new Error(`ElementNotFound: selector is ${selector}`);
-  }
-
-  return result as T;
-};
 
 const extract = (element: HTMLElement) => {
   const title = findOrFail<HTMLHeadingElement>(googleSearchResultSelectors.itemTitle, element);
