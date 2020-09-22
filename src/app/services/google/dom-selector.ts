@@ -1,6 +1,6 @@
 const container = 'div[role=main] div[data-async-context]';
 // each search result item
-const item = `${container} > .g:not(.g-blk)`;
+const item = `${container} > .g`;
 const itemHeader = `${item} .r`;
 const itemBody = `${item} .s`;
 const itemLink = `${itemHeader} > a`;

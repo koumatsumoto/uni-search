@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input } from '@angular/core';
-import { SearchResult } from '../../services/google/extract';
 
 const createIframe = (src: string) => {
   const iframe = document.createElement('iframe');
@@ -19,7 +18,7 @@ export class SearchResultViewerComponent {
   private currentSource = '';
   private iframes = new Map<string, HTMLIFrameElement>();
 
-  @Input() set data(newData: SearchResult | null) {
+  @Input() set data(newData: { href: string } | null) {
     // onInit or invalid data
     if (newData === null) {
       return;

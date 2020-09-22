@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   title = 'uni-search';
   searchResults: SearchResult[] = [];
-  selectedData: SearchResult | null = null;
+  selectedData: { href: string } | null = null;
 
   constructor(private readonly googleSearchGetterService: GoogleSearchService) {}
 
@@ -23,14 +23,11 @@ export class AppComponent implements OnInit {
   }
 
   selectData(data: SearchResult) {
-    console.log(data);
-
     this.selectedData = data;
   }
 
   async onSearchBoxSubmit(text: string) {
-    console.log('[dev]', text);
-
+    this.selectedData = { href: `https://www.google.com/search?q=${text}` };
     this.searchResults = await this.googleSearchGetterService.search(text);
   }
 }

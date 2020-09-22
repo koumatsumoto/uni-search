@@ -10,8 +10,9 @@ export class GoogleSearchService {
 
   async search(query: string) {
     const resultHtml = await this.request(query);
+    const parseResult = extractResult(resultHtml);
 
-    return extractResult(resultHtml);
+    return parseResult.success;
   }
 
   private async request(query: string, start = 0) {
