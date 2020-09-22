@@ -1,37 +1,41 @@
-const setHeader = (headers: chrome.webRequest.HttpHeader[], name: string, value: string) => {
-  const target = headers.find((h) => h.name.toLowerCase() === name);
-  if (target) {
-    target.value = value;
-  } else {
-    headers.push({ name, value });
-  }
-};
+// NOTE: restrict to compare as lower-case
+type AllowedHeaderName =
+  | 'access-control-allow-origin'
+  | 'access-control-allow-methods'
+  | 'access-control-allow-credentials'
+  | 'access-control-allow-headers'
+  | 'access-control-expose-headers'
+  | 'x-frame-options';
 
-const removeHeader = (headers: chrome.webRequest.HttpHeader[], name: 'origin' | 'x-frame-options') => {
+const remove = (headers: chrome.webRequest.HttpHeader[], name: AllowedHeaderName) => {
   const index = headers.findIndex((h) => h.name.toLowerCase() === name);
   if (index > -1) {
     headers.splice(index, 1);
   }
 };
 
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  (details) => {
-    const headers = details.requestHeaders || [];
-    removeHeader(headers, 'origin');
-
-    return { responseHeaders: headers };
-  },
-  { urls: ['*://*/*'], types: ['xmlhttprequest'] },
-  ['requestHeaders', 'blocking', 'extraHeaders'],
-);
+const upsert = (headers: chrome.webRequest.HttpHeader[], name: AllowedHeaderName, value: string) => {
+  const header = headers.find((h) => h.name.toLowerCase() === name);
+  if (header) {
+    header.value = value;
+  } else {
+    headers.push({ name, value });
+  }
+};
 
 chrome.webRequest.onHeadersReceived.addListener(
-  (details) => {
-    const headers = details.responseHeaders || [];
-    removeHeader(headers, 'x-frame-options');
+  ({ responseHeaders }) => {
+    responseHeaders = responseHeaders || [];
 
-    return { responseHeaders: headers };
+    upsert(responseHeaders, 'access-control-allow-origin', '*');
+    upsert(responseHeaders, 'access-control-allow-methods', 'GET, PUT, POST, DELETE, HEAD, OPTIONS, PATCH');
+    upsert(responseHeaders, 'access-control-allow-credentials', 'true');
+    upsert(responseHeaders, 'access-control-allow-headers', '*');
+    upsert(responseHeaders, 'access-control-expose-headers', '*');
+    remove(responseHeaders, 'x-frame-options');
+
+    return { responseHeaders };
   },
-  { urls: ['*://*/*'], types: ['sub_frame'] },
-  ['responseHeaders', 'blocking'],
+  { urls: ['<all_urls>'] },
+  ['responseHeaders', 'blocking', 'extraHeaders'],
 );
