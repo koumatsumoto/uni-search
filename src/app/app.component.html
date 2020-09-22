@@ -2,13 +2,13 @@
   <app-toolbar (searchSubmitted)="onSearchBoxSubmit($event)"></app-toolbar>
 </header>
 
-<main class="content" role="main">
-  <div class="layout-main-viewer" *ngIf="searchResults.length">
-    <div class="layout-search-result-container">
+<main class="layout-main" role="main">
+  <ng-container *ngIf="searchResults.length">
+    <div class="layout-search-result-list">
       <app-search-result-card *ngFor="let data of searchResults" [data]="data" (clicked)="selectData($event)"></app-search-result-card>
     </div>
     <div class="layout-search-result-viewers">
       <app-search-result-viewer [data]="selectedData"></app-search-result-viewer>
     </div>
-  </div>
+  </ng-container>
 </main>

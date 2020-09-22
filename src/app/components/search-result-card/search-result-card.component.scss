@@ -9,6 +9,10 @@ div {
   margin: 0 8px 16px;
   display: flex;
   flex-direction: column;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .text-domain {
