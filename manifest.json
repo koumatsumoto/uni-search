@@ -2,7 +2,7 @@
   "name": "uni-search",
   "version": "1.0",
   "description": "Personal search tool",
-  "permissions": ["webRequest", "webRequestBlocking", "https://*/", "wss://*/"],
+  "permissions": ["webRequest", "webRequestBlocking", "<all_urls>"],
   "background": {
     "scripts": ["background.js"],
     "persistent": true
