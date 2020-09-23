@@ -12,6 +12,8 @@ import { MatCardModule } from '@angular/material/card';
 import { SearchResultViewerComponent } from './components/search-result-viewer/search-result-viewer.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
+import { StoreModule } from '@ngrx/store';
+import * as coreStore from './store/core.store';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,17 @@ import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicato
     ToolbarComponent,
     DemoCircleIndicatorsComponent,
   ],
-  imports: [BrowserModule, FormsModule, ReactiveFormsModule, AppRoutingModule, HttpClientModule, BrowserAnimationsModule, MatCardModule],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+    StoreModule.forRoot({}),
+    StoreModule.forFeature(coreStore.storeName, coreStore.reducer),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

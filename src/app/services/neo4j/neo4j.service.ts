@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as neo4j from 'neo4j-driver';
 import { ReplaySubject } from 'rxjs';
-import { SearchResult } from '../google/extract';
+import { SearchResult } from '../../models/core';
 import { LoggerService } from '../logger/logger.service';
 
 const defaultUserName = 'main user';
