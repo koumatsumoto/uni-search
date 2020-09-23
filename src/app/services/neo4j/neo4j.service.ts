@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as neo4j from 'neo4j-driver';
+import { ReplaySubject } from 'rxjs';
 import { SearchResult } from '../google/extract';
+import { LoggerService } from '../logger/logger.service';
 
 const defaultUserName = 'main user';
 const returnFirstOrNull = (records: neo4j.Record[]) => {
@@ -18,14 +20,33 @@ const returnFirstOrNull = (records: neo4j.Record[]) => {
   providedIn: 'root',
 })
 export class Neo4jService {
-  private driver: neo4j.Driver;
+  private driver: neo4j.Driver | null = null;
+  private readonly connectStatus$ = new ReplaySubject<boolean>();
 
-  constructor() {
-    this.driver = neo4j.driver('bolt://localhost:11004', neo4j.auth.basic('neo4j', 'password'));
-    this.createUserIfNotExist().catch((e) => console.error(e));
+  get connectStatus() {
+    return this.connectStatus$.asObservable();
+  }
+
+  constructor(private readonly logger: LoggerService) {
     // to debug
     // tslint:disable-next-line
     (window as any).neo4j = this;
+  }
+
+  connect(options: { url: string; user: string; password: string }) {
+    if (this.driver) {
+      this.connectStatus$.next(true);
+      return true;
+    }
+    try {
+      this.driver = neo4j.driver(options.url, neo4j.auth.basic(options.user, options.password));
+      this.connectStatus$.next(true);
+      return true;
+    } catch (e) {
+      this.logger.error(e);
+      this.connectStatus$.next(false);
+      return false;
+    }
   }
 
   async findUser(name: string) {
@@ -100,11 +121,19 @@ export class Neo4jService {
     return result;
   }
 
+  private getDriverOfFail() {
+    if (!this.driver) {
+      throw new Error('Neo4jDriverNotPreparedError');
+    }
+
+    return this.driver;
+  }
+
   private getReadSession() {
-    return this.driver.session({ defaultAccessMode: neo4j.session.READ });
+    return this.getDriverOfFail().session({ defaultAccessMode: neo4j.session.READ });
   }
 
   private getWriteSession() {
-    return this.driver.session({ defaultAccessMode: neo4j.session.WRITE });
+    return this.getDriverOfFail().session({ defaultAccessMode: neo4j.session.WRITE });
   }
 }
