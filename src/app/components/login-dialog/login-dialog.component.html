@@ -1,0 +1,22 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="layout-container">
+    <mat-form-field class="layout-row">
+      <mat-label>URL</mat-label>
+      <input [formControl]="url" matInput name="url" type="url" />
+    </mat-form-field>
+
+    <mat-form-field class="layout-row">
+      <mat-label>User</mat-label>
+      <input [formControl]="name" matInput name="user" type="text" />
+    </mat-form-field>
+
+    <mat-form-field class="layout-row">
+      <mat-label>Password</mat-label>
+      <input [formControl]="password" matInput name="password" type="password" />
+    </mat-form-field>
+
+    <div class="layout-row layout-align-right">
+      <button mat-stroked-button color="primary">Connect</button>
+    </div>
+  </div>
+</form>
