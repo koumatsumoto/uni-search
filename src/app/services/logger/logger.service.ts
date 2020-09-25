@@ -31,8 +31,8 @@ export class LoggerService {
 
   private log(type: LogData['type'], data: unknown[]) {
     this.logStream.next({
-      time: Date.now(),
       type,
+      time: Date.now(),
       data,
     });
   }
