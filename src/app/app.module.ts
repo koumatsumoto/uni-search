@@ -21,6 +21,7 @@ import { StoreModule } from '@ngrx/store';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
+import { SearchResultListViewerComponent } from './components/search-result-list-viewer/search-result-list-viewer.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
     ToolbarComponent,
     DemoCircleIndicatorsComponent,
     LoginDialogComponent,
+    SearchResultListViewerComponent,
   ],
   imports: [
     BrowserModule,
