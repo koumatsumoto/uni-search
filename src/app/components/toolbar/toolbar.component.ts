@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
+import { UiDataService } from '../../services/ui/ui-data.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -6,9 +7,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
-  @Output() commandSubmitted = new EventEmitter<string>();
+  constructor(private readonly service: UiDataService) {}
 
   async onSearchBoxSubmit(text: string) {
-    this.commandSubmitted.emit(text);
+    await this.service.submitCommand(text);
   }
 }

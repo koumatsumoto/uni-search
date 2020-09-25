@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { emptyResult, SearchResult } from '../../services/google/extract';
+import { SearchResult } from '../../models/core';
+import { emptyResult } from '../../services/google/extract';
 
 @Component({
   selector: 'app-search-result-card',

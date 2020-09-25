@@ -1,12 +1,6 @@
-import { googleSearchResultSelectors } from './dom-selector';
 import { findOrFail } from '../../../libs/dom';
-
-export type SearchResult = {
-  readonly domain: string;
-  readonly title: string;
-  readonly description: string;
-  readonly href: string;
-};
+import { SearchResult } from '../../models/core';
+import { googleSearchResultSelectors } from './dom-selector';
 
 export const emptyResult: SearchResult = {
   domain: '',
