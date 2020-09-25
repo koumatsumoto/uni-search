@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogResult, LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { SearchResult } from './models/core';
 import { Neo4jService } from './services/neo4j/neo4j.service';
 import { UiDataService } from './services/ui/ui-data.service';
@@ -13,9 +15,20 @@ export class AppComponent implements OnInit {
   searchResults: SearchResult[] = [];
   selected: { href: string } | null = null;
 
-  constructor(private readonly neo4jService: Neo4jService, private readonly uiDataService: UiDataService) {}
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    private readonly uiDataService: UiDataService,
+    private readonly dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
+    this.dialog
+      .open(LoginDialogComponent)
+      .afterClosed()
+      .subscribe((value: DialogResult) => {
+        console.log(value);
+      });
+
     this.uiDataService.command.subscribe((command: string) => {
       this.selected = { href: `https://www.google.com/search?q=${command}` };
     });

@@ -1,3 +1,8 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -14,6 +19,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 import { StoreModule } from '@ngrx/store';
 import * as coreStore from './store/core.store';
+import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +29,7 @@ import * as coreStore from './store/core.store';
     SearchResultViewerComponent,
     ToolbarComponent,
     DemoCircleIndicatorsComponent,
+    LoginDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,9 +39,15 @@ import * as coreStore from './store/core.store';
     HttpClientModule,
     BrowserAnimationsModule,
     MatCardModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
     StoreModule.forRoot({}),
     StoreModule.forFeature(coreStore.storeName, coreStore.reducer),
   ],
+  entryComponents: [LoginDialogComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
