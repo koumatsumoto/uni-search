@@ -5,6 +5,10 @@ export type SearchResult = {
   readonly href: string;
 };
 
+export type BrowseTarget = {
+  url: string;
+};
+
 export type Neo4jAuth = {
   url: string;
   user: string;

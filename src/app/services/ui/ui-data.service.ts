@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
-import { Neo4jAuth } from '../../models/core';
+import { BrowseTarget, Neo4jAuth, SearchResult } from '../../models/core';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { GoogleSearchService } from '../google/google-search.service';
+import { Neo4jService } from '../neo4j/neo4j.service';
 import { AppStorageService } from '../storage/app-storage.service';
 
 const isNotNull = <T>(value: T | null): value is T => value !== null;
@@ -13,7 +14,7 @@ const isNotNull = <T>(value: T | null): value is T => value !== null;
   providedIn: 'root',
 })
 export class UiDataService {
-  get command() {
+  get submittedCommand() {
     return this.store.pipe(select(coreStore.selectCommand));
   }
 
@@ -25,15 +26,21 @@ export class UiDataService {
     return this.store.pipe(select(coreStore.selectLoginRequest), filter(isNotNull));
   }
 
+  get browseTarget() {
+    return this.store.pipe(select(coreStore.selectBrowseTarget), filter(isNotNull));
+  }
+
   constructor(
     private readonly store: Store<AppState>,
     private readonly googleSearchService: GoogleSearchService,
     private readonly storageService: AppStorageService,
+    private readonly neo4jService: Neo4jService,
   ) {}
 
   async submitCommand(command: string) {
     this.store.dispatch(coreStore.submitCommand(command));
     // TODO: search if command type is "search"
+    this.store.dispatch(coreStore.browseSearchResult({ url: `https://www.google.com/search?q=${command}` }));
     const results = await this.googleSearchService.search(command);
     this.store.dispatch(coreStore.resetSearchResults(results));
   }
@@ -41,5 +48,15 @@ export class UiDataService {
   submitLoginForm(value: Neo4jAuth) {
     this.storageService.saveNeo4jAuth(value);
     this.store.dispatch(coreStore.submitLoginForm(value));
+  }
+
+  async selectSearchResult(item: SearchResult) {
+    this.store.dispatch(coreStore.browseSearchResult({ url: item.href }));
+    // developing cypher-query
+    await this.neo4jService.forSelectedItem(item);
+  }
+
+  browse(value: BrowseTarget) {
+    this.store.dispatch(coreStore.browseSearchResult(value));
   }
 }
