@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { UiDataService } from '../../services/ui/ui-data.service';
 
 export type DialogResult = { url: string; name: string; password: string };
 
@@ -18,17 +19,21 @@ export class LoginDialogComponent {
     password: this.password,
   });
 
-  constructor(private readonly dialogRef: MatDialogRef<LoginDialogComponent, DialogResult>) {}
+  constructor(
+    private readonly dialogRef: MatDialogRef<LoginDialogComponent, DialogResult>,
+    private readonly uiDataService: UiDataService,
+  ) {}
 
   submit() {
     if (this.form.invalid) {
       return;
     }
 
-    this.dialogRef.close({
+    this.uiDataService.submitLoginForm({
       url: this.url.value,
-      name: this.name.value,
+      user: this.name.value,
       password: this.password.value,
     });
+    this.dialogRef.close();
   }
 }

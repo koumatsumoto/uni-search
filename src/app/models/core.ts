@@ -4,3 +4,9 @@ export type SearchResult = {
   readonly description: string;
   readonly href: string;
 };
+
+export type Neo4jAuth = {
+  url: string;
+  user: string;
+  password: string;
+};

@@ -18,6 +18,7 @@ import { SearchResultViewerComponent } from './components/search-result-viewer/s
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 import { StoreModule } from '@ngrx/store';
+import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 
@@ -47,6 +48,7 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
     StoreModule.forRoot({}),
     StoreModule.forFeature(coreStore.storeName, coreStore.reducer),
   ],
+  providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
   entryComponents: [LoginDialogComponent],
   bootstrap: [AppComponent],
 })

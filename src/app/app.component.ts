@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogResult, LoginDialogComponent } from './components/login-dialog/login-dialog.component';
+import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { SearchResult } from './models/core';
+import { Neo4jLoginManagerService } from './services/neo4j/neo4j-login-manager.service';
 import { Neo4jService } from './services/neo4j/neo4j.service';
 import { UiDataService } from './services/ui/ui-data.service';
 
@@ -17,25 +18,17 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly neo4jService: Neo4jService,
+    private readonly neo4jLoginManagerService: Neo4jLoginManagerService,
     private readonly uiDataService: UiDataService,
     private readonly dialog: MatDialog,
   ) {}
 
   ngOnInit() {
-    this.dialog
-      .open(LoginDialogComponent)
-      .afterClosed()
-      .subscribe((value: DialogResult) => {
-        console.log(value);
-      });
+    this.uiDataService.loginRequest.subscribe(() => this.dialog.open(LoginDialogComponent));
+    this.uiDataService.command.subscribe((command: string) => (this.selected = { href: `https://www.google.com/search?q=${command}` }));
+    this.uiDataService.searchResults.subscribe((results) => (this.searchResults = results));
 
-    this.uiDataService.command.subscribe((command: string) => {
-      this.selected = { href: `https://www.google.com/search?q=${command}` };
-    });
-
-    this.uiDataService.searchResults.subscribe((results) => {
-      this.searchResults = results;
-    });
+    this.neo4jLoginManagerService.start();
   }
 
   async onItemSelect(data: SearchResult) {
