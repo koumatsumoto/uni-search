@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { UiDataService } from '../../services/ui/ui-data.service';
 
 const createIframe = (src: string) => {
   const iframe = document.createElement('iframe');
@@ -14,36 +15,34 @@ const createIframe = (src: string) => {
   templateUrl: './search-result-viewer.component.html',
   styleUrls: ['./search-result-viewer.component.scss'],
 })
-export class SearchResultViewerComponent {
+export class SearchResultViewerComponent implements OnInit {
   private currentSource = '';
   private iframes = new Map<string, HTMLIFrameElement>();
 
-  @Input() set data(newData: { href: string } | null) {
-    // onInit or invalid data
-    if (newData === null) {
-      return;
-    }
-    // no change
-    if (newData.href === this.currentSource) {
-      return;
-    }
-    // changed
-    const currentIframe = this.iframes.get(this.currentSource);
-    if (currentIframe) {
-      currentIframe.style.display = 'none';
-    }
+  constructor(private readonly uiDataService: UiDataService, private readonly elementRef: ElementRef<HTMLElement>) {}
 
-    const toView = this.iframes.get(newData.href);
-    this.currentSource = newData.href;
-    // use cache if exists
-    if (toView) {
-      toView.style.display = 'block';
-    } else {
-      const iframe = createIframe(newData.href);
-      this.elementRef.nativeElement.appendChild(iframe);
-      this.iframes.set(newData.href, iframe);
-    }
+  ngOnInit() {
+    this.uiDataService.browseTarget.subscribe((item) => {
+      if (item.url === this.currentSource) {
+        return;
+      }
+
+      // changed
+      const currentIframe = this.iframes.get(this.currentSource);
+      if (currentIframe) {
+        currentIframe.style.display = 'none';
+      }
+
+      const toView = this.iframes.get(item.url);
+      this.currentSource = item.url;
+      // use cache if exists
+      if (toView) {
+        toView.style.display = 'block';
+      } else {
+        const iframe = createIframe(item.url);
+        this.elementRef.nativeElement.appendChild(iframe);
+        this.iframes.set(item.url, iframe);
+      }
+    });
   }
-
-  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 }
