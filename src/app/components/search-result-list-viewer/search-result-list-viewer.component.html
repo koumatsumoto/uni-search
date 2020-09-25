@@ -1,0 +1,6 @@
+<app-search-result-card
+  class="card"
+  *ngFor="let data of items$ | async"
+  [data]="data"
+  (clicked)="onItemSelect($event)"
+></app-search-result-card>

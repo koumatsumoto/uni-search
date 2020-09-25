@@ -3,17 +3,10 @@
 </header>
 
 <main class="layout-main" role="main">
-  <ng-container *ngIf="searchResults.length">
-    <div class="layout-search-result-list app-scrollbar-simple">
-      <app-search-result-card
-        *ngFor="let data of searchResults"
-        [data]="data"
-        (clicked)="onItemSelect($event)"
-        class="layout-search-result-list-item"
-      ></app-search-result-card>
-    </div>
-    <div class="layout-search-result-viewers app-scrollbar-simple">
-      <app-search-result-viewer></app-search-result-viewer>
-    </div>
-  </ng-container>
+  <div class="layout-search-result-list app-scrollbar-simple">
+    <app-search-result-list-viewer></app-search-result-list-viewer>
+  </div>
+  <div class="layout-search-result-viewers app-scrollbar-simple">
+    <app-search-result-viewer></app-search-result-viewer>
+  </div>
 </main>

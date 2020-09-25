@@ -1,0 +1,11 @@
+.card {
+  margin: 8px 4px 8px 6px;
+
+  &:first-of-type {
+    margin-top: 8px;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
