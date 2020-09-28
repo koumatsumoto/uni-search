@@ -32,10 +32,21 @@ chrome.webRequest.onHeadersReceived.addListener(
     upsert(responseHeaders, 'access-control-allow-credentials', 'true');
     upsert(responseHeaders, 'access-control-allow-headers', '*');
     upsert(responseHeaders, 'access-control-expose-headers', '*');
+
+    return { responseHeaders };
+  },
+  { urls: ['https://www.google.com/search?q=*'], types: ['main_frame'] },
+  ['responseHeaders', 'blocking', 'extraHeaders'],
+);
+
+chrome.webRequest.onHeadersReceived.addListener(
+  ({ responseHeaders }) => {
+    responseHeaders = responseHeaders || [];
+
     remove(responseHeaders, 'x-frame-options');
 
     return { responseHeaders };
   },
-  { urls: ['<all_urls>'] },
+  { urls: ['<all_urls>'], types: ['sub_frame'] },
   ['responseHeaders', 'blocking', 'extraHeaders'],
 );
