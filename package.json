@@ -2,12 +2,13 @@
   "name": "uni-search",
   "version": "0.0.0",
   "scripts": {
-    "build": "yarn :build:ng:app --prod && yarn :build:tsc:extensions && yarn :build:copy-manifest",
+    "build": "yarn :build:ng:app --prod && yarn :build:tsc:extensions && yarn :build:copy-css && yarn :build:copy-manifest",
     "format": "prettier --write . && ng lint --fix",
     "start": "ng serve",
     "// 1": "internal scripts",
     ":build:ng:app": "ng build",
-    ":build:tsc:extensions": "tsc src/chrome-extensions/background.ts --outDir dist",
+    ":build:tsc:extensions": "tsc src/chrome-extensions/*.ts --outDir dist",
+    ":build:copy-css": "cp src/chrome-extensions/*.css dist/",
     ":build:copy-manifest": "cp manifest.json dist/manifest.json",
     ":test:e2e": "ng e2e",
     ":test:unit": "ng test"
