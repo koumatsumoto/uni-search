@@ -1,11 +1,9 @@
 const container = 'div[role=main] div[data-async-context]';
 // each search result item
 const item = `${container} > .g`;
-const itemHeader = `${item} .r`;
-const itemBody = `${item} .s`;
-const itemLink = `${itemHeader} > a`;
-const itemTitle = `${itemLink} > h3`;
-const itemDescription = `${itemBody} span.st`;
+const itemLink = `${item} a`;
+const itemTitle = `${item} h3`;
+const itemDescription = `${item} div.rc > div:nth-child(1)`;
 
 export const googleSearchResultSelectors = {
   item,
