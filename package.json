@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "~10.1.0",
     "@angular/router": "~10.1.0",
     "@ngrx/store": "^10.0.0",
+    "@ngrx/store-devtools": "^10.0.0",
     "destyle.css": "^1.0.15",
     "neo4j-driver": "^4.1.2",
     "rxjs": "~6.6.0",

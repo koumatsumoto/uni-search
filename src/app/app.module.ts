@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +23,7 @@ import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,10 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
     MatButtonModule,
     StoreModule.forRoot({}),
     StoreModule.forFeature(coreStore.storeName, coreStore.reducer),
+    StoreDevtoolsModule.instrument({
+      maxAge: 30, // Retains last 30 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
   providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
   entryComponents: [LoginDialogComponent],
