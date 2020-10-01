@@ -4,11 +4,11 @@ import { SearchResult } from '../../models/core';
 import { UiDataService } from '../../services/ui/ui-data.service';
 
 @Component({
-  selector: 'app-search-result-list-viewer',
-  templateUrl: './search-result-list-viewer.component.html',
-  styleUrls: ['./search-result-list-viewer.component.scss'],
+  selector: 'app-sidenav',
+  templateUrl: './sidenav.component.html',
+  styleUrls: ['./sidenav.component.scss'],
 })
-export class SearchResultListViewerComponent implements OnInit {
+export class SidenavComponent implements OnInit {
   items$!: Observable<SearchResult[]>;
 
   constructor(private readonly uiDataService: UiDataService) {}

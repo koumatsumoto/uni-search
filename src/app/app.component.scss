@@ -1,23 +1,19 @@
 $height-header: 60px;
-$height-app-max: calc(100vh - #{$height-header});
-
-$width-app-max: 100vw;
+$height-app-main-content: calc(100vh - #{$height-header});
 $width-main-left-column-max: 240px;
-$width-main-right-column-max: calc(100vh - #{$width-main-left-column-max});
 
 :host {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol';
   font-size: 14px;
-  color: #333;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   display: grid;
-  grid-template-rows: $height-header auto;
+  grid-template-rows: $height-header 1fr;
+  grid-template-columns: $width-main-left-column-max 1fr;
+  grid-template-areas:
+    'header header'
+    'sidenav main';
 }
 
-.layout-header {
+.header {
+  grid-area: header;
   height: $height-header;
   max-height: $height-header;
   min-height: $height-header;
@@ -25,30 +21,18 @@ $width-main-right-column-max: calc(100vh - #{$width-main-left-column-max});
   z-index: 1; // higher than layout-main
 }
 
-.layout-main {
+.sidenav {
+  grid-area: sidenav;
   position: relative;
-  z-index: 0;
-  min-height: $height-app-max;
-  max-height: $height-app-max;
-  min-width: 100vw;
-  max-width: 100vw;
-  overflow: hidden;
-
-  display: grid;
-  grid-template-columns: $width-main-left-column-max auto;
-}
-
-.layout-search-result-list {
-  flex: 0;
-  min-height: $height-app-max;
-  max-height: $height-app-max;
+  min-height: $height-app-main-content;
+  max-height: $height-app-main-content;
   overflow: auto;
 }
 
-.layout-search-result-viewers {
-  flex: 1;
-  display: flex;
-  min-height: $height-app-max;
-  max-height: $height-app-max;
+.main {
+  grid-area: main;
+  position: relative;
+  min-height: $height-app-main-content;
+  max-height: $height-app-main-content;
   overflow: hidden;
 }

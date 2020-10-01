@@ -14,25 +14,25 @@ import { HttpClientModule } from '@angular/common/http';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
-import { SearchResultViewerComponent } from './components/search-result-viewer/search-result-viewer.component';
+import { BrowserComponent } from './components/browser/browser.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 import { StoreModule } from '@ngrx/store';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
-import { SearchResultListViewerComponent } from './components/search-result-list-viewer/search-result-list-viewer.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchBoxComponent,
     SearchResultCardComponent,
-    SearchResultViewerComponent,
+    BrowserComponent,
     ToolbarComponent,
     DemoCircleIndicatorsComponent,
     LoginDialogComponent,
-    SearchResultListViewerComponent,
+    SidenavComponent,
   ],
   imports: [
     BrowserModule,
