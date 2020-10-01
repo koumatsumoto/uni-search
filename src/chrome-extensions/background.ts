@@ -35,7 +35,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 
     return { responseHeaders };
   },
-  { urls: ['https://www.google.com/search?q=*'], types: ['main_frame'] },
+  { urls: ['https://www.google.com/search?q=*'], types: ['xmlhttprequest'] },
   ['responseHeaders', 'blocking', 'extraHeaders'],
 );
 
