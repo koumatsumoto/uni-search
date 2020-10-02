@@ -1,11 +1,54 @@
-.card {
-  margin: 8px 4px 8px 6px;
+:host {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
 
-  &:first-of-type {
-    margin-top: 8px;
+$max-width: 320px;
+$left-band: 24px;
+
+.main-area {
+  width: $max-width;
+  min-height: 100%;
+  max-height: 100%;
+  padding-left: $left-band;
+  overflow: auto;
+  z-index: 1;
+  position: absolute;
+  background: white;
+}
+
+.sub-area {
+  $area-width: 240px;
+  width: $area-width;
+  min-height: 100%;
+  max-height: 100%;
+  overflow: auto;
+  position: absolute;
+  z-index: 2;
+  background: #fafafa;
+  transform: translateX(-$area-width + $left-band);
+  transition: transform 200ms ease-in-out;
+  opacity: 0.88;
+
+  &:hover {
+    transform: translateX(0);
   }
+}
+
+.search-result-list {
+  padding: 8px 6px;
+}
+
+.card {
+  margin-bottom: 8px;
 
   &:last-of-type {
     margin-bottom: 0;
   }
+}
+
+.context-list {
+  padding: 8px 6px;
 }

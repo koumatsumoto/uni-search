@@ -1,6 +1,15 @@
-<app-search-result-card
-  class="card"
-  *ngFor="let data of items$ | async"
-  [data]="data"
-  (clicked)="onItemSelect($event)"
-></app-search-result-card>
+<div class="main-area">
+  <div class="search-result-list">
+    <app-search-result-card
+      class="card"
+      *ngFor="let data of items$ | async"
+      [data]="data"
+      (clicked)="onItemSelect($event)"
+    ></app-search-result-card>
+  </div>
+</div>
+<div class="sub-area">
+  <div class="context-list">
+    <div *ngFor="let data of logs$ | async">{{ data.type }}</div>
+  </div>
+</div>

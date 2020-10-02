@@ -14,3 +14,8 @@ export type Neo4jAuth = {
   user: string;
   password: string;
 };
+
+export type ActivityLog = {
+  type: 'browse start' | 'browse page';
+  data: object;
+};
