@@ -30,6 +30,10 @@ export class UiDataService {
     return this.store.pipe(select(coreStore.selectBrowseTarget), filter(isNotNull));
   }
 
+  get activityLogs() {
+    return this.store.pipe(select(coreStore.selectActivityLogs));
+  }
+
   constructor(
     private readonly store: Store<AppState>,
     private readonly googleSearchService: GoogleSearchService,
@@ -41,6 +45,7 @@ export class UiDataService {
     this.store.dispatch(coreStore.submitCommand(command));
     // TODO: search if command type is "search"
     this.store.dispatch(coreStore.browseSearchResult({ url: `https://www.google.com/search?q=${command}` }));
+    this.store.dispatch(coreStore.addActivityLog({ type: 'browse start', data: {} }));
     const results = await this.googleSearchService.search(command);
     this.store.dispatch(coreStore.resetSearchResults(results));
   }
@@ -52,6 +57,7 @@ export class UiDataService {
 
   async selectSearchResult(item: SearchResult) {
     this.store.dispatch(coreStore.browseSearchResult({ url: item.href }));
+    this.store.dispatch(coreStore.addActivityLog({ type: 'browse page', data: { url: item.href } }));
     // developing cypher-query
     await this.neo4jService.forSelectedItem(item);
   }

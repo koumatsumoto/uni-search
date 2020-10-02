@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SearchResult } from '../../models/core';
+import { ActivityLog, SearchResult } from '../../models/core';
 import { UiDataService } from '../../services/ui/ui-data.service';
 
 @Component({
@@ -10,11 +10,13 @@ import { UiDataService } from '../../services/ui/ui-data.service';
 })
 export class SidenavComponent implements OnInit {
   items$!: Observable<SearchResult[]>;
+  logs$!: Observable<ActivityLog[]>;
 
   constructor(private readonly uiDataService: UiDataService) {}
 
   ngOnInit(): void {
     this.items$ = this.uiDataService.searchResults;
+    this.logs$ = this.uiDataService.activityLogs;
   }
 
   async onItemSelect(data: SearchResult) {
