@@ -23,7 +23,7 @@ export class UiDataService {
   }
 
   get loginRequest() {
-    return this.store.pipe(select(coreStore.selectLoginRequest), filter(isNotNull));
+    return this.store.pipe(select(coreStore.selectLoginRequirement), filter(isNotNull));
   }
 
   get browseTarget() {
@@ -34,10 +34,22 @@ export class UiDataService {
     return this.store.pipe(select(coreStore.selectActivityLogs));
   }
 
+  get cachedLoginInformation() {
+    const cache = this.storage.loadNeo4jAuth();
+
+    return !!cache
+      ? cache
+      : {
+          url: '',
+          user: '',
+          password: '',
+        };
+  }
+
   constructor(
     private readonly store: Store<AppState>,
+    private readonly storage: AppStorageService,
     private readonly googleSearchService: GoogleSearchService,
-    private readonly storageService: AppStorageService,
     private readonly neo4jService: Neo4jService,
   ) {}
 
@@ -51,8 +63,8 @@ export class UiDataService {
   }
 
   submitLoginForm(value: Neo4jAuth) {
-    this.storageService.saveNeo4jAuth(value);
-    this.store.dispatch(coreStore.submitLoginForm(value));
+    this.storage.saveNeo4jAuth(value);
+    this.store.dispatch(coreStore.requestLogin(value));
   }
 
   async selectSearchResult(item: SearchResult) {
