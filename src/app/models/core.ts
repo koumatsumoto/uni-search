@@ -15,6 +15,10 @@ export type Neo4jAuth = {
   password: string;
 };
 
+export type Neo4jLoginRequirement = {
+  time: number;
+};
+
 export type ActivityLog = {
   type: 'browse start' | 'browse page';
   data: object;

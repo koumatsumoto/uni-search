@@ -21,7 +21,7 @@ const returnFirstOrNull = (records: neo4j.Record[]) => {
 })
 export class Neo4jService {
   private driver: neo4j.Driver | null = null;
-  private readonly connectStatus$ = new ReplaySubject<boolean>();
+  private readonly connectStatus$ = new ReplaySubject<boolean>(1);
 
   get connectStatus() {
     return this.connectStatus$.asObservable();
@@ -33,19 +33,28 @@ export class Neo4jService {
     (window as any).neo4j = this;
   }
 
-  connect(options: { url: string; user: string; password: string }) {
-    if (this.driver) {
-      this.connectStatus$.next(true);
-      return true;
-    }
+  async connect(options: { url: string; user: string; password: string }) {
     try {
-      this.driver = neo4j.driver(options.url, neo4j.auth.basic(options.user, options.password));
+      if (!this.driver) {
+        this.driver = neo4j.driver(options.url, neo4j.auth.basic(options.user, options.password));
+      }
+      // throw if unauthorized
+      await this.driver.verifyConnectivity();
       this.connectStatus$.next(true);
-      return true;
     } catch (e) {
       this.logger.error(e);
+      await this.cleanup();
       this.connectStatus$.next(false);
-      return false;
+    }
+  }
+
+  async cleanup() {
+    try {
+      if (this.driver) {
+        await this.driver.close();
+      }
+    } finally {
+      this.driver = null;
     }
   }
 

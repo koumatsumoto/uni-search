@@ -1,13 +1,13 @@
 import { createAction, createReducer, createSelector, on, union } from '@ngrx/store';
-import { ActivityLog, BrowseTarget, Neo4jAuth, SearchResult } from '../models/core';
+import { ActivityLog, BrowseTarget, Neo4jAuth, Neo4jLoginRequirement, SearchResult } from '../models/core';
 
 export const storeName = 'core';
 export const initialState = {
   command: '',
   searchResults: null as SearchResult[] | null,
   browseTarget: null as BrowseTarget | null,
-  loginFormValue: null as Neo4jAuth | null,
-  loginRequest: null as number | null,
+  loginAuth: null as Neo4jAuth | null,
+  loginRequirement: null as Neo4jLoginRequirement | null,
   activityLogs: [] as ActivityLog[],
 };
 export type State = Readonly<typeof initialState>;
@@ -16,8 +16,8 @@ export type AppState = { [storeName]: State };
 export const submitCommand = createAction('[Command] submit', (command: string) => ({ data: command }));
 export const resetSearchResults = createAction('[Search] update results', (results: SearchResult[]) => ({ data: results }));
 export const browseSearchResult = createAction('[Search] browse a search result', (value: BrowseTarget) => ({ data: value }));
-export const submitLoginForm = createAction('[Neo4j] submit neo4j login form', (value: Neo4jAuth) => ({ data: value }));
-export const requestNeo4jLogin = createAction('[Neo4j] request neo4j login', (requestedAt: number) => ({ data: requestedAt }));
+export const requestLogin = createAction('[Neo4j] request login to neo4j', (value: Neo4jAuth) => ({ data: value }));
+export const requireLogin = createAction('[Neo4j] require login to neo4j', (requiredAt: number) => ({ data: { time: requiredAt } }));
 export const addActivityLog = createAction('[Activity] add', (act: ActivityLog) => ({ data: act }));
 const actions = union({ submitCommand });
 export type ActionsUnion = typeof actions;
@@ -36,13 +36,13 @@ const innerReducer = createReducer(
     ...state,
     browseTarget: action.data,
   })),
-  on(submitLoginForm, (state, action) => ({
+  on(requestLogin, (state, action) => ({
     ...state,
-    loginFormValue: action.data,
+    loginAuth: action.data,
   })),
-  on(requestNeo4jLogin, (state, action) => ({
+  on(requireLogin, (state, action) => ({
     ...state,
-    loginRequest: action.data,
+    loginRequirement: action.data,
   })),
   on(addActivityLog, (state, action) => ({
     ...state,
@@ -55,6 +55,6 @@ export const selectFeatureStore = (state: AppState) => state.core;
 export const selectCommand = createSelector(selectFeatureStore, (state: State) => state.command);
 export const selectSearchResults = createSelector(selectFeatureStore, (state: State) => state.searchResults);
 export const selectBrowseTarget = createSelector(selectFeatureStore, (state: State) => state.browseTarget);
-export const selectLoginFormValue = createSelector(selectFeatureStore, (state: State) => state.loginFormValue);
-export const selectLoginRequest = createSelector(selectFeatureStore, (state: State) => state.loginRequest);
+export const selectLoginRequest = createSelector(selectFeatureStore, (state: State) => state.loginAuth);
+export const selectLoginRequirement = createSelector(selectFeatureStore, (state: State) => state.loginRequirement);
 export const selectActivityLogs = createSelector(selectFeatureStore, (state: State) => state.activityLogs);
