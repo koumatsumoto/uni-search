@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { extractResult } from './extract';
 
+const getGoogleSearchUrl = (query: string, offset: number) => `https://www.google.com/search?q=${query}&start=${offset}`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,6 +18,6 @@ export class GoogleSearchService {
   }
 
   private async request(query: string, start = 0) {
-    return await this.http.get(`https://www.google.com/search?q=${query}&start=${start}`, { responseType: 'text' }).toPromise();
+    return await this.http.get(getGoogleSearchUrl(query, start), { responseType: 'text' }).toPromise();
   }
 }
