@@ -17,13 +17,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { BrowserComponent } from './components/browser/browser.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { DemoCircleIndicatorsComponent } from './components/demo-circle-indicators/demo-circle-indicators.component';
 import { StoreModule } from '@ngrx/store';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -32,7 +32,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     SearchResultCardComponent,
     BrowserComponent,
     ToolbarComponent,
-    DemoCircleIndicatorsComponent,
     LoginDialogComponent,
     SidenavComponent,
   ],
@@ -43,7 +42,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatCardModule,
+    MatMenuModule,
     MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
