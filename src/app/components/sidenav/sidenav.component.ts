@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActivityLog, SearchResult } from '../../models/core';
-import { UiDataService } from '../../services/ui/ui-data.service';
+import { GoogleSearchResult } from '../../models/core';
+import { UiCommandService } from '../../services/app/ui-command.service';
+import { UiQueryService } from '../../services/app/ui-query.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -9,17 +10,15 @@ import { UiDataService } from '../../services/ui/ui-data.service';
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
-  items$!: Observable<SearchResult[]>;
-  logs$!: Observable<ActivityLog[]>;
+  items$!: Observable<GoogleSearchResult[]>;
 
-  constructor(private readonly uiDataService: UiDataService) {}
+  constructor(private readonly commandService: UiCommandService, private readonly queryService: UiQueryService) {}
 
   ngOnInit(): void {
-    this.items$ = this.uiDataService.searchResults;
-    this.logs$ = this.uiDataService.activityLogs;
+    this.items$ = this.queryService.searchResults;
   }
 
-  async onItemSelect(data: SearchResult) {
-    await this.uiDataService.selectSearchResult(data);
+  async onItemSelect(data: GoogleSearchResult) {
+    await this.commandService.selectSearchResult(data);
   }
 }

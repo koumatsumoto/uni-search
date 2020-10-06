@@ -1,8 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { bufferTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { BrowseTarget } from '../../models/core';
-import { UiDataService } from '../../services/ui/ui-data.service';
+import { BrowseRequest } from '../../models/core';
+import { UiQueryService } from '../../services/app/ui-query.service';
 
 const createIframe = (src: string, onLoaded: () => unknown) => {
   const iframe = document.createElement('iframe');
@@ -14,19 +12,6 @@ const createIframe = (src: string, onLoaded: () => unknown) => {
   return iframe;
 };
 
-const distinctOverTime = (time: number) => {
-  return <T>(source: Observable<T>) =>
-    source.pipe(
-      distinctUntilChanged(),
-      bufferTime(time),
-      map((values) => {
-        // - true,false => false
-        // - true,false,true => true
-        return values.length % 2 === 0 ? values[values.length - 1] : values[0];
-      }),
-    );
-};
-
 @Component({
   selector: 'app-browser',
   templateUrl: './browser.component.html',
@@ -35,24 +20,17 @@ const distinctOverTime = (time: number) => {
 export class BrowserComponent implements OnInit {
   private currentSource = '';
   private iframes = new Map<string, HTMLIFrameElement>();
-  private loading = new BehaviorSubject<boolean>(false);
 
-  get loading$() {
-    return this.loading.asObservable().pipe(distinctOverTime(100));
-  }
-
-  constructor(private readonly uiDataService: UiDataService, private readonly elementRef: ElementRef<HTMLElement>) {}
+  constructor(private readonly queryService: UiQueryService, private readonly elementRef: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
-    this.uiDataService.browseTarget.subscribe((item) => this.changeBrowseTarget(item));
+    this.queryService.browseRequest.subscribe((item) => this.changeBrowseTarget(item));
   }
 
-  private changeBrowseTarget(item: BrowseTarget) {
+  private changeBrowseTarget(item: BrowseRequest) {
     if (item.url === this.currentSource) {
       return;
     }
-
-    this.loading.next(true);
 
     // changed
     const currentIframe = this.iframes.get(this.currentSource);
@@ -67,7 +45,6 @@ export class BrowserComponent implements OnInit {
       toView.style.display = 'block';
     } else {
       const iframe = createIframe(item.url, () => {
-        this.loading.next(false);
         // console.log('[dev] loading false');
       });
       this.elementRef.nativeElement.appendChild(iframe);

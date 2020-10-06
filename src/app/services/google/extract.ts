@@ -1,12 +1,12 @@
 import { findOrFail } from '../../../libs/dom';
-import { SearchResult } from '../../models/core';
+import { GoogleSearchResult } from '../../models/core';
 import { googleSearchResultSelectors } from './dom-selector';
 
-export const emptyResult: SearchResult = {
+export const emptyResult: GoogleSearchResult = {
   domain: '',
   title: '',
   description: '',
-  href: '',
+  url: '',
 } as const;
 
 const extract = (element: HTMLElement) => {
@@ -16,10 +16,10 @@ const extract = (element: HTMLElement) => {
   const url = new URL(link.href);
 
   return {
-    domain: url.hostname,
     title: title.innerText,
     description: description.innerText,
-    href: url.href,
+    domain: url.hostname,
+    url: url.href,
   } as const;
 };
 
@@ -39,7 +39,7 @@ export const extractResult = (html: string) => {
     throw new Error('InvalidHtmlError');
   }
 
-  const success: SearchResult[] = [];
+  const success: GoogleSearchResult[] = [];
   const error: Error[] = [];
   const ignore: { reason: string }[] = [];
   try {
