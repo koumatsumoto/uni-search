@@ -4,8 +4,9 @@ import { BrowseRequest, GoogleSearchResult, Neo4jAuth } from '../../models/core'
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { getGoogleSearchUrl, GoogleSearchService } from '../google/google-search.service';
-import { Neo4jLoginService } from '../neo4j/neo4j-login.service';
-import { Neo4jService } from '../neo4j/neo4j.service';
+import { Neo4jAuthService } from '../neo4j/neo4j-auth.service';
+import { Neo4jInitializeService } from '../neo4j/neo4j-initialize.service';
+import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
 
 @Injectable({
@@ -16,8 +17,9 @@ export class UiCommandService {
     private readonly store: Store<AppState>,
     private readonly storage: AppStorageService,
     private readonly googleSearchService: GoogleSearchService,
-    private readonly neo4jService: Neo4jService,
-    private readonly neo4jLoginService: Neo4jLoginService,
+    private readonly neo4jService: Neo4jRepositoryService,
+    private readonly neo4jLoginService: Neo4jAuthService,
+    private readonly neo4jInitializeService: Neo4jInitializeService,
   ) {}
 
   async search(text: string) {
@@ -41,5 +43,13 @@ export class UiCommandService {
 
   browse(value: BrowseRequest) {
     this.store.dispatch(coreStore.browserRequest(value));
+  }
+
+  openDatabaseInfoDialog() {
+    this.store.dispatch(coreStore.requestDialogOpen({ type: 'database-info', time: Date.now() }));
+  }
+
+  async resetDatabase() {
+    await this.neo4jInitializeService.resetDatabase();
   }
 }

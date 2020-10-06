@@ -1,0 +1,13 @@
+<div>
+  <table>
+    <tr *ngIf="totalRecordCount | async as count">
+      <th>Total Record Count</th>
+      <td>row: {{ count.low }}, high: {{ count.high }}</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="align-right">
+        <button mat-stroked-button color="accent" (click)="onResetButtonClick()">Reset</button>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -4,8 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { UiCommandService } from '../../services/app/ui-command.service';
 import { UiQueryService } from '../../services/app/ui-query.service';
 
-export type DialogResult = { url: string; name: string; password: string };
-
 @Component({
   templateUrl: './login-dialog.component.html',
   styleUrls: ['./login-dialog.component.scss'],
@@ -17,7 +15,7 @@ export class LoginDialogComponent implements OnInit {
   form!: FormGroup;
 
   constructor(
-    private readonly dialogRef: MatDialogRef<LoginDialogComponent, DialogResult>,
+    private readonly dialogRef: MatDialogRef<LoginDialogComponent>,
     private readonly queryService: UiQueryService,
     private readonly commandService: UiCommandService,
   ) {}
