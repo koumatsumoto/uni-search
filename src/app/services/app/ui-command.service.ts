@@ -9,6 +9,11 @@ import { Neo4jInitializeService } from '../neo4j/neo4j-initialize.service';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
 
+const toWebContents = (searchResult: GoogleSearchResult) => ({
+  ...searchResult,
+  uri: searchResult.url,
+});
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,8 +21,8 @@ export class UiCommandService {
   constructor(
     private readonly store: Store<AppState>,
     private readonly storage: AppStorageService,
+    private readonly repository: Neo4jRepositoryService,
     private readonly googleSearchService: GoogleSearchService,
-    private readonly neo4jService: Neo4jRepositoryService,
     private readonly neo4jLoginService: Neo4jAuthService,
     private readonly neo4jInitializeService: Neo4jInitializeService,
   ) {}
@@ -28,6 +33,9 @@ export class UiCommandService {
     this.browse({ url: getGoogleSearchUrl(text) });
     const results = await this.googleSearchService.search(text);
     this.store.dispatch(coreStore.resetSearchResults(results));
+
+    const contents = await Promise.all(results.map((item) => this.repository.updateWebContentsForSearchResult(toWebContents(item))));
+    console.log(contents);
   }
 
   submitLoginForm(value: Neo4jAuth) {
@@ -37,8 +45,6 @@ export class UiCommandService {
 
   async selectSearchResult(item: GoogleSearchResult) {
     this.browse(item);
-    // developing cypher-query
-    await this.neo4jService.forSelectedItem(item);
   }
 
   browse(value: BrowseRequest) {
