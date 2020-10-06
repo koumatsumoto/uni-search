@@ -2,13 +2,6 @@ import { findOrFail } from '../../../libs/dom';
 import { GoogleSearchResult } from '../../models/core';
 import { googleSearchResultSelectors } from './dom-selector';
 
-export const emptyResult: GoogleSearchResult = {
-  domain: '',
-  title: '',
-  description: '',
-  url: '',
-} as const;
-
 const extract = (element: HTMLElement) => {
   const title = findOrFail<HTMLHeadingElement>(googleSearchResultSelectors.itemTitle, element);
   const link = findOrFail<HTMLAnchorElement>(googleSearchResultSelectors.itemLink, element);

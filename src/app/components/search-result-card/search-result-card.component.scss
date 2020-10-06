@@ -16,7 +16,7 @@
 }
 
 .text-title {
-  font-size: 15px;
+  font-size: 14px;
   // disable mat-typography
   margin: 0;
   line-height: 1.4em;
@@ -36,6 +36,7 @@
   // disable mat-typography
   margin: 0;
   line-height: 1.6em;
+  white-space: pre-line;
 }
 
 .row-logo-and-domain {
