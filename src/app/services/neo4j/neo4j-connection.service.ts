@@ -44,7 +44,7 @@ export class Neo4jConnectionService {
     }
   }
 
-  createSession(mode: 'read' | 'write' = 'read') {
+  createSession(mode: 'read' | 'write' = 'write') {
     return mode === 'read' ? this.getReadSession() : this.getWriteSession();
   }
 

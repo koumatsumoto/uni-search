@@ -17,9 +17,11 @@ export type Neo4jAuth = {
 
 export type WebContents = {
   readonly title: string;
-  readonly description: string;
   readonly domain: string;
-  readonly url: string;
+  readonly uri: string;
+  readonly searchHitCount: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
 };
 
 export type Word = {

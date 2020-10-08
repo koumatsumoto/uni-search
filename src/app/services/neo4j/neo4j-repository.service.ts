@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { GoogleSearchResult } from '../../models/core';
+import { WebContents } from '../../models/core';
 import { Neo4jConnectionService } from './neo4j-connection.service';
 import { returnFirstOrNull } from './util';
-
-const defaultUserName = 'main user';
 
 @Injectable({
   providedIn: 'root',
@@ -18,43 +16,25 @@ export class Neo4jRepositoryService {
     return returnFirstOrNull(result.records) as { low: number; high: number };
   }
 
-  async findResource(item: GoogleSearchResult) {
-    const query = 'MATCH (r: Resource) WHERE r.uri = $uri RETURN r';
-    const result = await this.neo4j.createSession('read').run(query, { uri: item.url });
-
-    return returnFirstOrNull(result.records);
-  }
-
-  async createResource(item: GoogleSearchResult) {
-    const query = 'CREATE (i: Resource { uri: $uri, title: $title, domain: $domain }) RETURN i';
-    const result = await this.neo4j.createSession('write').run(query, {
-      uri: item.url,
-      title: item.title,
-      domain: item.domain,
-    });
-
-    return result;
-  }
-
-  async createView(item: GoogleSearchResult) {
+  async updateWebContentsForSearchResult(value: Pick<WebContents, 'uri' | 'title' | 'domain'>): Promise<WebContents> {
     const query = `
-      MATCH (u: User { name: $name }), (r: Resource { uri: $uri })
-      CREATE (u)-[:BROWSE { time: $time }]->(i)`;
-    const result = await this.neo4j.createSession('write').run(query, {
-      name: defaultUserName,
-      uri: item.url,
-      time: new Date().toISOString(),
-    });
+      MERGE (n: WebContents {uri: $uri})
+        ON CREATE SET n.title = $title, n.domain = $domain, n.createdAt = timestamp(), n.updatedAt = timestamp(), n.searchHitCount = 1
+        ON MATCH SET n.title = $title, n.domain = $domain, n.updatedAt = timestamp(), n.searchHitCount = n.searchHitCount + 1
+      RETURN n;
+    `;
 
-    return result;
-  }
+    const result = await this.neo4j.createSession().run(query, value);
+    const record = result.records[0];
+    const node = record.get(0);
 
-  async forSelectedItem(item: GoogleSearchResult) {
-    const found = await this.findResource(item);
-    if (!found) {
-      await this.createResource(item);
-    }
-
-    await this.createView(item);
+    return {
+      uri: node.properties.uri,
+      domain: node.properties.domain,
+      title: node.properties.title,
+      searchHitCount: node.properties.searchHitCount.toNumber(),
+      createdAt: node.properties.createdAt.toNumber(),
+      updatedAt: node.properties.updatedAt.toNumber(),
+    };
   }
 }
