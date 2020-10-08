@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BrowseOption } from '../../models/core';
-import { UiCommandService } from '../../services/app/ui-command.service';
-import { UiQueryService } from '../../services/app/ui-query.service';
+import { AppCommandService } from '../../services/app/app-command.service';
+import { AppQueryService } from '../../services/app/app-query.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -11,7 +11,7 @@ import { UiQueryService } from '../../services/app/ui-query.service';
 export class SidenavComponent implements OnInit {
   items: BrowseOption[] = [];
 
-  constructor(private readonly commandService: UiCommandService, private readonly queryService: UiQueryService) {}
+  constructor(private readonly commandService: AppCommandService, private readonly queryService: AppQueryService) {}
 
   ngOnInit(): void {
     this.queryService.searchResultList.subscribe((items) => (this.items = items));

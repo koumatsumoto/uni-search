@@ -17,7 +17,7 @@ const toWebContents = (searchResult: GoogleSearchResult) => ({
 @Injectable({
   providedIn: 'root',
 })
-export class UiCommandService {
+export class AppCommandService {
   constructor(
     private readonly store: Store<AppState>,
     private readonly storage: AppStorageService,

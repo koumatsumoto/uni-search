@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UiCommandService } from '../../services/app/ui-command.service';
+import { AppCommandService } from '../../services/app/app-command.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -7,7 +7,7 @@ import { UiCommandService } from '../../services/app/ui-command.service';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
-  constructor(private readonly service: UiCommandService) {}
+  constructor(private readonly service: AppCommandService) {}
 
   onSearchBoxSubmit(text: string) {
     this.service.search(text);

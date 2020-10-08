@@ -1131,6 +1131,13 @@
     merge-source-map "^1.1.0"
     schema-utils "^2.7.0"
 
+"@ngrx/component-store@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/component-store/-/component-store-10.0.1.tgz#0d321f82b8439463d31b97d7614bd8251732b868"
+  integrity sha512-Yk45yW6AgrUjnup+ICKsSgpaNi2Is7VT/c6KEfqQLSNCC8CAoMNNQFsQtwiNCed19wxPr5UdLeVR7qtVowW1dw==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngrx/store-devtools@^10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-10.0.0.tgz#018716afd3df89bd2fa1f603966878f82e80d727"
