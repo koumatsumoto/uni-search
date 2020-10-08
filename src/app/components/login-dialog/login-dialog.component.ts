@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { UiDataService } from '../../services/ui/ui-data.service';
+import { UiCommandService } from '../../services/app/ui-command.service';
+import { UiQueryService } from '../../services/app/ui-query.service';
 
 export type DialogResult = { url: string; name: string; password: string };
 
@@ -17,11 +18,12 @@ export class LoginDialogComponent implements OnInit {
 
   constructor(
     private readonly dialogRef: MatDialogRef<LoginDialogComponent, DialogResult>,
-    private readonly uiDataService: UiDataService,
+    private readonly queryService: UiQueryService,
+    private readonly commandService: UiCommandService,
   ) {}
 
   ngOnInit() {
-    const cache = this.uiDataService.cachedLoginInformation;
+    const cache = this.queryService.cachedLoginInformation;
 
     this.url = new FormControl(cache.url, Validators.required);
     this.user = new FormControl(cache.user, Validators.required);
@@ -38,7 +40,7 @@ export class LoginDialogComponent implements OnInit {
       return;
     }
 
-    this.uiDataService.submitLoginForm({
+    this.commandService.submitLoginForm({
       url: this.url.value,
       user: this.user.value,
       password: this.password.value,

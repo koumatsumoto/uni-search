@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as neo4j from 'neo4j-driver';
 import { ReplaySubject } from 'rxjs';
-import { SearchResult } from '../../models/core';
+import { first } from 'rxjs/operators';
+import { GoogleSearchResult } from '../../models/core';
 import { LoggerService } from '../logger/logger.service';
 
 const defaultUserName = 'main user';
@@ -46,6 +47,8 @@ export class Neo4jService {
       await this.cleanup();
       this.connectStatus$.next(false);
     }
+
+    return this.connectStatus.pipe(first()).toPromise();
   }
 
   async cleanup() {
@@ -65,9 +68,9 @@ export class Neo4jService {
     return returnFirstOrNull(result.records);
   }
 
-  async findResource(item: SearchResult) {
+  async findResource(item: GoogleSearchResult) {
     const query = 'MATCH (r: Resource) WHERE r.uri = $uri RETURN r';
-    const result = await this.getReadSession().run(query, { uri: item.href });
+    const result = await this.getReadSession().run(query, { uri: item.url });
 
     return returnFirstOrNull(result.records);
   }
@@ -79,10 +82,10 @@ export class Neo4jService {
     return result;
   }
 
-  async createResource(item: SearchResult) {
+  async createResource(item: GoogleSearchResult) {
     const query = 'CREATE (i: Resource { uri: $uri, title: $title, domain: $domain }) RETURN i';
     const result = await this.getWriteSession().run(query, {
-      uri: item.href,
+      uri: item.url,
       title: item.title,
       domain: item.domain,
     });
@@ -90,20 +93,20 @@ export class Neo4jService {
     return result;
   }
 
-  async createView(item: SearchResult) {
+  async createView(item: GoogleSearchResult) {
     const query = `
       MATCH (u: User { name: $name }), (r: Resource { uri: $uri })
       CREATE (u)-[:BROWSE { time: $time }]->(i)`;
     const result = await this.getWriteSession().run(query, {
       name: defaultUserName,
-      uri: item.href,
+      uri: item.url,
       time: new Date().toISOString(),
     });
 
     return result;
   }
 
-  async forSelectedItem(item: SearchResult) {
+  async forSelectedItem(item: GoogleSearchResult) {
     const found = await this.findResource(item);
     if (!found) {
       await this.createResource(item);

@@ -1,25 +1,16 @@
-export type SearchResult = {
-  readonly domain: string;
+export type GoogleSearchResult = {
   readonly title: string;
   readonly description: string;
-  readonly href: string;
+  readonly domain: string;
+  readonly url: string;
 };
 
-export type BrowseTarget = {
-  url: string;
+export type BrowseRequest = {
+  readonly url: string;
 };
 
 export type Neo4jAuth = {
-  url: string;
-  user: string;
-  password: string;
-};
-
-export type Neo4jLoginRequirement = {
-  time: number;
-};
-
-export type ActivityLog = {
-  type: 'browse start' | 'browse page';
-  data: object;
+  readonly url: string;
+  readonly user: string;
+  readonly password: string;
 };

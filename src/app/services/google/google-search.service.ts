@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { extractResult } from './extract';
 
-const getGoogleSearchUrl = (query: string, offset: number) => `https://www.google.com/search?q=${query}&start=${offset}`;
+export const getGoogleSearchUrl = (query: string, offset: number = 0) => `https://www.google.com/search?q=${query}&start=${offset}`;
 
 @Injectable({
   providedIn: 'root',

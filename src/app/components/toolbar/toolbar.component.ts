@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UiDataService } from '../../services/ui/ui-data.service';
+import { UiCommandService } from '../../services/app/ui-command.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -7,9 +7,9 @@ import { UiDataService } from '../../services/ui/ui-data.service';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
-  constructor(private readonly service: UiDataService) {}
+  constructor(private readonly service: UiCommandService) {}
 
   async onSearchBoxSubmit(text: string) {
-    await this.service.submitCommand(text);
+    await this.service.search(text);
   }
 }
