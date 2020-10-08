@@ -19,11 +19,23 @@ export type WebContents = {
   readonly title: string;
   readonly domain: string;
   readonly uri: string;
-  readonly searchHitCount: string;
-  readonly createdAt: string;
-  readonly updatedAt: string;
+  readonly searchHitCount: number;
+  readonly browseCount: number;
+  readonly createdAt: number;
+  readonly updatedAt: number;
 };
 
 export type Word = {
   readonly value: string;
+};
+
+export type BrowseOption = {
+  readonly title: string;
+  readonly description: string;
+  readonly domain: string;
+  readonly url: string;
+  readonly searchHitCount?: number;
+  readonly browseCount?: number;
+  readonly createdAt?: number;
+  readonly updatedAt?: number;
 };

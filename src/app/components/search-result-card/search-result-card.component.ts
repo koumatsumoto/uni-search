@@ -1,6 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { GoogleSearchResult } from '../../models/core';
-import { emptyResult } from '../../services/google/extract';
+import { BrowseOption, GoogleSearchResult } from '../../models/core';
 
 const getGoogleFaviconApi = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}`;
 
@@ -14,7 +13,7 @@ export class SearchResultCardComponent {
     return getGoogleFaviconApi(this.data.domain);
   }
 
-  @Input() data: GoogleSearchResult = emptyResult;
+  @Input() data!: BrowseOption;
   @Output() clicked = new EventEmitter<GoogleSearchResult>();
   @HostListener('click') click() {
     this.clicked.emit(this.data);

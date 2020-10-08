@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { GoogleSearchResult } from '../../models/core';
+import { BrowseOption } from '../../models/core';
 import { UiCommandService } from '../../services/app/ui-command.service';
 import { UiQueryService } from '../../services/app/ui-query.service';
 
@@ -10,15 +9,19 @@ import { UiQueryService } from '../../services/app/ui-query.service';
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
-  items$!: Observable<GoogleSearchResult[]>;
+  items: BrowseOption[] = [];
 
   constructor(private readonly commandService: UiCommandService, private readonly queryService: UiQueryService) {}
 
   ngOnInit(): void {
-    this.items$ = this.queryService.searchResults;
+    this.queryService.searchResultList.subscribe((items) => (this.items = items));
   }
 
-  async onItemSelect(data: GoogleSearchResult) {
+  async onItemSelect(data: BrowseOption) {
     await this.commandService.selectSearchResult(data);
+  }
+
+  trackByFn(index: number) {
+    return index;
   }
 }

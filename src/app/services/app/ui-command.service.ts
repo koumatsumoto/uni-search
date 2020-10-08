@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BrowseRequest, GoogleSearchResult, Neo4jAuth } from '../../models/core';
+import { BrowseOption, GoogleSearchResult, Neo4jAuth } from '../../models/core';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { getGoogleSearchUrl, GoogleSearchService } from '../google/google-search.service';
@@ -29,13 +29,13 @@ export class UiCommandService {
 
   async search(text: string) {
     this.store.dispatch(coreStore.submitCommand(text));
+    this.store.dispatch(coreStore.browserRequest({ url: getGoogleSearchUrl(text) }));
 
-    this.browse({ url: getGoogleSearchUrl(text) });
     const results = await this.googleSearchService.search(text);
     this.store.dispatch(coreStore.resetSearchResults(results));
 
     const contents = await Promise.all(results.map((item) => this.repository.updateWebContentsForSearchResult(toWebContents(item))));
-    console.log(contents);
+    this.store.dispatch(coreStore.updateWebContents(contents));
   }
 
   submitLoginForm(value: Neo4jAuth) {
@@ -43,12 +43,14 @@ export class UiCommandService {
     this.neo4jLoginService.tryLogin(value);
   }
 
-  async selectSearchResult(item: GoogleSearchResult) {
-    this.browse(item);
+  async selectSearchResult(item: BrowseOption) {
+    await this.browse(item);
   }
 
-  browse(value: BrowseRequest) {
+  async browse(value: BrowseOption) {
     this.store.dispatch(coreStore.browserRequest(value));
+    const contents = await this.repository.updateWebContentsForBrowse({ ...value, uri: value.url });
+    this.store.dispatch(coreStore.updateWebContents([contents]));
   }
 
   openDatabaseInfoDialog() {

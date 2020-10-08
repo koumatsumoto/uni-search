@@ -8,5 +8,8 @@
   </div>
 </div>
 <div class="layout-content">
-  <p class="text-description">{{ data.description }}</p>
+  <p class="text-description">
+    {{ data.browseCount }} / {{ data.searchHitCount }}<br />
+    {{ data.updatedAt | date: 'yyyy年MM月dd日' }} / {{ data.createdAt | date: 'yyyy年MM月dd日' }}
+  </p>
 </div>

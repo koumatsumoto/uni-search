@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { from } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { combineLatest, from } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { BrowseOption, GoogleSearchResult, WebContents } from '../../models/core';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
 
 const isNotNull = <T>(value: T | null): value is T => value !== null;
+const makeBrowseOption = (searchResult: GoogleSearchResult, contentsMap: Map<string, WebContents>): BrowseOption => {
+  const contents = contentsMap.get(searchResult.url);
+
+  return !contents ? searchResult : { ...searchResult, ...contents };
+};
 
 @Injectable({
   providedIn: 'root',
@@ -45,5 +51,11 @@ export class UiQueryService {
 
   getTotalRecordCount() {
     return from(this.repository.getTotalCount());
+  }
+
+  get searchResultList() {
+    return combineLatest(this.searchResults, this.store.pipe(select(coreStore.selectWebContents))).pipe(
+      map(([searchResults, contents]) => searchResults.map((item) => makeBrowseOption(item, contents.dictionary))),
+    );
   }
 }
