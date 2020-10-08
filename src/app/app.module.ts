@@ -16,8 +16,9 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserComponent } from './components/browser/browser.component';
-import { DatabaseInformationDialogComponent } from './components/database-information-dialog/database-information-dialog.component';
-import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
+import { DatabaseInformationDialogComponent } from './components/dialogs/database-information-dialog/database-information-dialog.component';
+import { ExtensionInfoDialogComponent } from './components/dialogs/extension-info-dialog/extension-info-dialog.component';
+import { LoginDialogComponent } from './components/dialogs/login-dialog/login-dialog.component';
 import { SearchBoxComponent } from './components/search-box/search-box.component';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
@@ -35,6 +36,7 @@ import * as coreStore from './store/core.store';
     LoginDialogComponent,
     SidenavComponent,
     DatabaseInformationDialogComponent,
+    ExtensionInfoDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,7 @@ import * as coreStore from './store/core.store';
     }),
   ],
   providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
-  entryComponents: [LoginDialogComponent, DatabaseInformationDialogComponent],
+  entryComponents: [LoginDialogComponent, DatabaseInformationDialogComponent, ExtensionInfoDialogComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

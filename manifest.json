@@ -9,6 +9,11 @@
   },
   "content_scripts": [
     {
+      "// 1": "TODO: `chrome-extension://:extensionId/`",
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    },
+    {
       "matches": ["<all_urls>"],
       "css": ["scrollbar.css"],
       "all_frames": true

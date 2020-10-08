@@ -1,16 +1,17 @@
 import { createAction, createReducer, createSelector, on, union } from '@ngrx/store';
-import { BrowseRequest, GoogleSearchResult, WebContents } from '../models/core';
+import { BrowseRequest, ChromeExtensionStatus, GoogleSearchResult, WebContents } from '../models/core';
 
 export const storeName = 'core';
 export const initialState = {
   command: '',
   searchResults: null as GoogleSearchResult[] | null,
   browseRequest: null as BrowseRequest | null,
-  dialogOpenRequest: null as { type: string; time: number } | null,
+  dialogOpenRequest: null as { type: 'database-info' | 'login' | 'extension-info'; time: number } | null,
   webContents: {
     dictionary: new Map<WebContents['uri'], WebContents>(),
     lastUpdate: Date.now(),
   } as const,
+  chromeExtensionStatus: null as null | ChromeExtensionStatus,
 };
 export type State = Readonly<typeof initialState>;
 export type AppState = { [storeName]: State };
@@ -18,11 +19,12 @@ export type AppState = { [storeName]: State };
 export const submitCommand = createAction('[Command] submit', (command: string) => ({ data: command }));
 export const resetSearchResults = createAction('[Search] update results', (results: GoogleSearchResult[]) => ({ data: results }));
 export const browserRequest = createAction('[Search] browse request', (value: BrowseRequest) => ({ data: value }));
-export const requestDialogOpen = createAction('[UI] request dialog open', (request: { type: string; time: number }) => ({ data: request }));
+export const requestDialogOpen = createAction('[UI] request dialog open', (request: State['dialogOpenRequest']) => ({ data: request }));
 export const updateWebContents = createAction('[Data] update multiple webcontents', (data: WebContents[], updateTime = Date.now()) => ({
   data,
   updateTime,
 }));
+export const updateExtensionStatus = createAction('[Extension] update status', (status: ChromeExtensionStatus) => ({ data: status }));
 const actions = union({ submitCommand });
 export type ActionsUnion = typeof actions;
 
@@ -37,6 +39,7 @@ const innerReducer = createReducer(
 
     return { ...state, webContents: { dictionary: state.webContents.dictionary, lastUpdate: action.updateTime } };
   }),
+  on(updateExtensionStatus, (state, action) => ({ ...state, chromeExtensionStatus: action.data })),
 );
 export const reducer = (state: State, action: ActionsUnion) => innerReducer(state, action);
 
@@ -46,3 +49,4 @@ export const selectSearchResults = createSelector(selectFeatureStore, (state: St
 export const selectBrowseRequest = createSelector(selectFeatureStore, (state: State) => state.browseRequest);
 export const selectDialogOpenRequest = createSelector(selectFeatureStore, (state: State) => state.dialogOpenRequest);
 export const selectWebContents = createSelector(selectFeatureStore, (state: State) => state.webContents);
+export const selectExtensionStatus = createSelector(selectFeatureStore, (state: State) => state.chromeExtensionStatus);

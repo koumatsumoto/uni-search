@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { UiCommandService } from '../../services/app/ui-command.service';
-import { UiQueryService } from '../../services/app/ui-query.service';
+import { AppCommandService } from '../../../services/app/app-command.service';
+import { AppQueryService } from '../../../services/app/app-query.service';
 
 @Component({
   selector: 'app-database-information-dialog',
@@ -14,8 +14,8 @@ export class DatabaseInformationDialogComponent implements OnInit {
 
   constructor(
     private readonly dialogRef: MatDialogRef<DatabaseInformationDialogComponent>,
-    private readonly queryService: UiQueryService,
-    private readonly commandService: UiCommandService,
+    private readonly queryService: AppQueryService,
+    private readonly commandService: AppCommandService,
   ) {}
 
   ngOnInit(): void {

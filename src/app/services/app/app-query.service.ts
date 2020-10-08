@@ -7,8 +7,8 @@ import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
+import { isNotNull } from '../util/functions';
 
-const isNotNull = <T>(value: T | null): value is T => value !== null;
 const makeBrowseOption = (searchResult: GoogleSearchResult, contentsMap: Map<string, WebContents>): BrowseOption => {
   const contents = contentsMap.get(searchResult.url);
 
@@ -18,7 +18,7 @@ const makeBrowseOption = (searchResult: GoogleSearchResult, contentsMap: Map<str
 @Injectable({
   providedIn: 'root',
 })
-export class UiQueryService {
+export class AppQueryService {
   get searchResults() {
     return this.store.pipe(select(coreStore.selectSearchResults), filter(isNotNull));
   }

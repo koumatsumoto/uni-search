@@ -39,3 +39,8 @@ export type BrowseOption = {
   readonly createdAt?: number;
   readonly updatedAt?: number;
 };
+
+export type ChromeExtensionStatus = {
+  isWorking: boolean;
+  expiration: number;
+};

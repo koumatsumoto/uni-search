@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { UiCommandService } from '../../services/app/ui-command.service';
-import { UiQueryService } from '../../services/app/ui-query.service';
+import { AppCommandService } from '../../../services/app/app-command.service';
+import { AppQueryService } from '../../../services/app/app-query.service';
 
 @Component({
   templateUrl: './login-dialog.component.html',
@@ -16,8 +16,8 @@ export class LoginDialogComponent implements OnInit {
 
   constructor(
     private readonly dialogRef: MatDialogRef<LoginDialogComponent>,
-    private readonly queryService: UiQueryService,
-    private readonly commandService: UiCommandService,
+    private readonly queryService: AppQueryService,
+    private readonly commandService: AppCommandService,
   ) {}
 
   ngOnInit() {

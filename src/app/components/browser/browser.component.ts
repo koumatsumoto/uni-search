@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { BrowseRequest } from '../../models/core';
-import { UiQueryService } from '../../services/app/ui-query.service';
+import { AppQueryService } from '../../services/app/app-query.service';
 
 const createIframe = (src: string, onLoaded: () => unknown) => {
   const iframe = document.createElement('iframe');
@@ -21,7 +21,7 @@ export class BrowserComponent implements OnInit {
   private currentSource = '';
   private iframes = new Map<string, HTMLIFrameElement>();
 
-  constructor(private readonly queryService: UiQueryService, private readonly elementRef: ElementRef<HTMLElement>) {}
+  constructor(private readonly queryService: AppQueryService, private readonly elementRef: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
     this.queryService.browseRequest.subscribe((item) => this.changeBrowseTarget(item));
