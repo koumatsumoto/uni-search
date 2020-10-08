@@ -14,3 +14,14 @@ export type Neo4jAuth = {
   readonly user: string;
   readonly password: string;
 };
+
+export type WebContents = {
+  readonly title: string;
+  readonly description: string;
+  readonly domain: string;
+  readonly url: string;
+};
+
+export type Word = {
+  readonly value: string;
+};

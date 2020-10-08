@@ -9,7 +9,11 @@ import { UiCommandService } from '../../services/app/ui-command.service';
 export class ToolbarComponent {
   constructor(private readonly service: UiCommandService) {}
 
-  async onSearchBoxSubmit(text: string) {
-    await this.service.search(text);
+  onSearchBoxSubmit(text: string) {
+    this.service.search(text);
+  }
+
+  async onDatabaseButtonClick() {
+    this.service.openDatabaseInfoDialog();
   }
 }

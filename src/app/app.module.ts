@@ -1,29 +1,29 @@
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SearchBoxComponent } from './components/search-box/search-box.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatCardModule } from '@angular/material/card';
 import { BrowserComponent } from './components/browser/browser.component';
+import { DatabaseInformationDialogComponent } from './components/database-information-dialog/database-information-dialog.component';
+import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
+import { SearchBoxComponent } from './components/search-box/search-box.component';
+import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { StoreModule } from '@ngrx/store';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
-import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -34,6 +34,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ToolbarComponent,
     LoginDialogComponent,
     SidenavComponent,
+    DatabaseInformationDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +57,7 @@ import { MatMenuModule } from '@angular/material/menu';
     }),
   ],
   providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
-  entryComponents: [LoginDialogComponent],
+  entryComponents: [LoginDialogComponent, DatabaseInformationDialogComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
