@@ -28,7 +28,8 @@ export class AppCommandService {
   ) {}
 
   async search(text: string) {
-    this.store.dispatch(coreStore.submitCommand(text));
+    this.store.dispatch(coreStore.searchWord(text));
+    await this.repository.updateWord({ uri: text, name: text });
     this.store.dispatch(coreStore.browserRequest({ url: getGoogleSearchUrl(text) }));
 
     const results = await this.googleSearchService.search(text);
@@ -36,6 +37,11 @@ export class AppCommandService {
 
     const contents = await Promise.all(results.map((item) => this.repository.updateWebContentsForSearchResult(toWebContents(item))));
     this.store.dispatch(coreStore.updateWebContents(contents));
+
+    await Promise.all([contents.map((c) => this.repository.addRelationship({ wordUri: text, contentsUri: c.uri }))]);
+
+    const data = await this.repository.getAll();
+    console.log('[dev] all data', data);
   }
 
   submitLoginForm(value: Neo4jAuth) {
