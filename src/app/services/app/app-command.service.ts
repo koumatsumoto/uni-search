@@ -66,4 +66,12 @@ export class AppCommandService {
   async resetDatabase() {
     await this.neo4jInitializeService.resetDatabase();
   }
+
+  viewExplorer() {
+    this.store.dispatch(coreStore.switchView('explorer'));
+  }
+
+  viewDashboard() {
+    this.store.dispatch(coreStore.switchView('dashboard'));
+  }
 }

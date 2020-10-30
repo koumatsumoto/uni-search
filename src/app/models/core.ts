@@ -5,6 +5,8 @@ export type GoogleSearchResult = {
   readonly url: string;
 };
 
+export type ApplicationViewType = 'explorer' | 'dashboard';
+
 export type BrowseRequest = {
   readonly url: string;
 };

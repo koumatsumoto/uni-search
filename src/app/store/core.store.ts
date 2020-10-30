@@ -1,8 +1,9 @@
 import { createAction, createReducer, createSelector, on, union } from '@ngrx/store';
-import { BrowseRequest, ChromeExtensionStatus, GoogleSearchResult, WebContents } from '../models/core';
+import { BrowseRequest, ChromeExtensionStatus, GoogleSearchResult, ApplicationViewType, WebContents } from '../models/core';
 
 export const storeName = 'core';
 export const initialState = {
+  viewType: 'explorer' as ApplicationViewType,
   searchWord: '',
   searchResults: null as GoogleSearchResult[] | null,
   browseRequest: null as BrowseRequest | null,
@@ -16,6 +17,7 @@ export const initialState = {
 export type State = Readonly<typeof initialState>;
 export type AppState = { [storeName]: State };
 
+export const switchView = createAction('[View] switch application view type', (type: ApplicationViewType) => ({ data: type }));
 export const searchWord = createAction('[Command] search word', (word: string) => ({ data: word }));
 export const resetSearchResults = createAction('[Search] update results', (results: GoogleSearchResult[]) => ({ data: results }));
 export const browserRequest = createAction('[Search] browse request', (value: BrowseRequest) => ({ data: value }));
@@ -30,6 +32,7 @@ export type ActionsUnion = typeof actions;
 
 const innerReducer = createReducer(
   initialState,
+  on(switchView, (state, action) => ({ ...state, viewType: action.data })),
   on(searchWord, (state, action) => ({ ...state, searchWord: action.data })),
   on(resetSearchResults, (state, action) => ({ ...state, searchResults: action.data })),
   on(browserRequest, (state, action) => ({ ...state, browseRequest: action.data })),
@@ -44,6 +47,7 @@ const innerReducer = createReducer(
 export const reducer = (state: State, action: ActionsUnion) => innerReducer(state, action);
 
 export const selectFeatureStore = (state: AppState) => state.core;
+export const selectViewType = createSelector(selectFeatureStore, (state: State) => state.viewType);
 export const selectCommand = createSelector(selectFeatureStore, (state: State) => state.searchWord);
 export const selectSearchResults = createSelector(selectFeatureStore, (state: State) => state.searchResults);
 export const selectBrowseRequest = createSelector(selectFeatureStore, (state: State) => state.browseRequest);
