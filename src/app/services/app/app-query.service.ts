@@ -47,10 +47,6 @@ export class AppQueryService {
         };
   }
 
-  get dialogOpenRequest() {
-    return this.store.pipe(select(coreStore.selectDialogOpenRequest), filter(isNotNull));
-  }
-
   constructor(
     private readonly store: Store<AppState>,
     private readonly storage: AppStorageService,
@@ -62,8 +58,12 @@ export class AppQueryService {
   }
 
   get searchResultList() {
-    return combineLatest(this.searchResults, this.store.pipe(select(coreStore.selectWebContents))).pipe(
+    return combineLatest(this.searchResults, this.store.select(coreStore.selectWebContents)).pipe(
       map(([searchResults, contents]) => searchResults.map((item) => makeBrowseOption(item, contents.dictionary))),
     );
+  }
+
+  get isChromeExtensionWorking() {
+    return this.store.select(coreStore.selectors.selectAppStateChromeExtension).pipe(filter(isNotNull));
   }
 }

@@ -1,7 +1,8 @@
 // after all flags got true, application got ready
 export type ApplicationStatus = {
-  chromeExtensionWorking: boolean;
-  neo4jWorking: boolean;
+  appComponentInitialized: boolean;
+  chromeExtensionWorking: boolean | null;
+  neo4jWorking: boolean | null;
 };
 
 export type GoogleSearchResult = {

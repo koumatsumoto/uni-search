@@ -12,8 +12,9 @@ import {
 export const storeName = 'core';
 export const initialState = {
   appStatus: {
-    chromeExtensionWorking: false,
-    neo4jWorking: false,
+    appComponentInitialized: false,
+    chromeExtensionWorking: null,
+    neo4jWorking: null,
   } as ApplicationStatus,
   viewType: 'explorer' as ApplicationViewType,
   searchWord: '',
@@ -99,6 +100,7 @@ export const selectBrowseRequest = createSelector(selectFeatureStore, (state: St
 export const selectDialogOpenRequest = createSelector(selectFeatureStore, (state: State) => state.dialogOpenRequest);
 export const selectWebContents = createSelector(selectFeatureStore, (state: State) => state.webContents);
 const selectAppState = createSelector(selectFeatureStore, (state: State) => state.appStatus);
+const selectAppStateChromeExtension = createSelector(selectFeatureStore, (state: State) => state.appStatus.chromeExtensionWorking);
 const selectActivity = createSelector(selectFeatureStore, (state: State) => state.activity);
 const selectActivityLog = createSelector(selectFeatureStore, (state: State) => state.activityLog);
 
@@ -113,4 +115,5 @@ export const selectors = {
   selectAppState,
   selectActivity,
   selectActivityLog,
+  selectAppStateChromeExtension,
 };

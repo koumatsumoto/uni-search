@@ -1,51 +1,56 @@
 import { Injectable } from '@angular/core';
 import * as neo4j from 'neo4j-driver';
-import { ReplaySubject } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
+
+const connectionEvents = {
+  connectSuccess: 'connection success',
+  connectFailure: 'connection failure',
+} as const;
+type ConnectionEvent = typeof connectionEvents[keyof typeof connectionEvents];
+
+export const isConnectionSuccess = (event: ConnectionEvent) => event === connectionEvents.connectSuccess;
 
 @Injectable({
   providedIn: 'root',
 })
 export class Neo4jConnectionService {
   private driver: neo4j.Driver | null = null;
-  private readonly connectStatus$ = new ReplaySubject<boolean>(1);
+  private readonly connectionEvent$ = new Subject<ConnectionEvent>();
 
-  get connectStatus() {
-    return this.connectStatus$.asObservable();
+  get connectionEvent() {
+    return this.connectionEvent$.asObservable();
   }
 
   constructor(private readonly logger: LoggerService) {}
 
-  async connect(options: { url: string; user: string; password: string }) {
-    try {
-      if (!this.driver) {
-        this.driver = neo4j.driver(options.url, neo4j.auth.basic(options.user, options.password));
-      }
-      // throw if unauthorized
-      await this.driver.verifyConnectivity();
-      this.connectStatus$.next(true);
-    } catch (e) {
-      this.logger.error(e);
-      await this.cleanup();
-      this.connectStatus$.next(false);
+  connect(options: { url: string; user: string; password: string }) {
+    if (!this.driver) {
+      this.driver = neo4j.driver(options.url, neo4j.auth.basic(options.user, options.password));
     }
 
-    return this.connectStatus.pipe(first()).toPromise();
-  }
-
-  async cleanup() {
-    try {
-      if (this.driver) {
-        await this.driver.close();
-      }
-    } finally {
-      this.driver = null;
-    }
+    this.driver
+      .verifyConnectivity()
+      .then(() => {
+        this.connectionEvent$.next(connectionEvents.connectSuccess);
+      })
+      .catch((e) => {
+        this.logger.error(e);
+        this.connectionEvent$.next(connectionEvents.connectFailure);
+        this.cleanup();
+      });
   }
 
   createSession(mode: 'read' | 'write' = 'write') {
     return mode === 'read' ? this.getReadSession() : this.getWriteSession();
+  }
+
+  private cleanup() {
+    if (this.driver) {
+      this.driver.close().finally(() => {
+        this.driver = null;
+      });
+    }
   }
 
   private getDriverOfFail() {

@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { AppQueryService } from '../../../services/app/app-query.service';
 
 @Component({
   selector: 'app-extension-info-dialog',
   templateUrl: './extension-info-dialog.component.html',
   styleUrls: ['./extension-info-dialog.component.scss'],
 })
-export class ExtensionInfoDialogComponent implements OnInit {
-  constructor() {}
+export class ExtensionInfoDialogComponent {
+  readonly isWorking = this.queryService.isChromeExtensionWorking;
 
-  ngOnInit(): void {}
+  constructor(private readonly queryService: AppQueryService, private readonly dialogRef: MatDialogRef<ExtensionInfoDialogComponent>) {}
+
+  close() {
+    this.dialogRef.close();
+  }
 }
