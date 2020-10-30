@@ -27,6 +27,10 @@ export class AppQueryService {
     return this.store.pipe(select(coreStore.selectSearchResults), filter(isNotNull));
   }
 
+  get activities() {
+    return this.store.pipe(select(coreStore.selectors.selectActivityLog), filter(isNotNull));
+  }
+
   get browseRequest() {
     return this.store.pipe(select(coreStore.selectBrowseRequest), filter(isNotNull));
   }

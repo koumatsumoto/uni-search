@@ -5,8 +5,9 @@ import { Neo4jAuth } from '../../models/core';
 import { AppState, requestDialogOpen } from '../../store/core.store';
 import { AppStorageService } from '../storage/app-storage.service';
 import { Neo4jConnectionService } from './neo4j-connection.service';
+import * as coreStore from '../../store/core.store';
 
-const isLoggedOutStatus = (status: boolean) => !status;
+const isLoggedOut = (status: boolean) => !status;
 
 @Injectable({
   providedIn: 'root',
@@ -30,11 +31,18 @@ export class Neo4jAuthService {
     }
 
     try {
-      this.neo4j.connectStatus.pipe(filter(isLoggedOutStatus)).subscribe(() => this.openLoginForm(getTimeFn));
+      this.neo4j.connectStatus.subscribe((status) => {
+        if (isLoggedOut(status)) {
+          this.store.dispatch(coreStore.actions.updateAppStatus({ neo4jWorking: false }));
+          this.openLoginForm(getTimeFn);
+        } else {
+          this.store.dispatch(coreStore.actions.updateAppStatus({ neo4jWorking: true }));
+        }
+      });
 
       const cache = this.storage.loadNeo4jAuth();
       if (cache) {
-        this.tryLogin(cache).catch(); // cannot be thrown
+        this.tryLogin(cache).then().catch(); // cannot be thrown
       } else {
         this.openLoginForm(getTimeFn);
       }

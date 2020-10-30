@@ -2,7 +2,7 @@
   <div class="search-result-list">
     <app-search-result-card
       class="card"
-      *ngFor="let data of items; trackBy: trackByFn"
+      *ngFor="let data of contents; trackBy: trackByFn"
       [data]="data"
       (clicked)="onItemSelect($event)"
     ></app-search-result-card>

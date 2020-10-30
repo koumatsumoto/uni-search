@@ -10,23 +10,27 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveComponentModule } from '@ngrx/component';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ActivityListViewerComponent } from './components/activity-list-viewer.component/activity-list-viewer.component';
 import { BrowserComponent } from './components/browser/browser.component';
+import { ContentsListViewerComponent } from './components/contents-list-viewer.component/contents-list-viewer.component';
+import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
 import { DatabaseInformationDialogComponent } from './components/dialogs/database-information-dialog/database-information-dialog.component';
 import { ExtensionInfoDialogComponent } from './components/dialogs/extension-info-dialog/extension-info-dialog.component';
 import { LoginDialogComponent } from './components/dialogs/login-dialog/login-dialog.component';
 import { SearchBoxComponent } from './components/search-box/search-box.component';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
+import { CoreEffects } from './store/core.effects';
 import * as coreStore from './store/core.store';
-import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
+import { ActivityCardComponent } from './components/activity-card/activity-card.component';
 
 @NgModule({
   declarations: [
@@ -36,10 +40,12 @@ import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
     BrowserComponent,
     ToolbarComponent,
     LoginDialogComponent,
-    SidenavComponent,
+    ContentsListViewerComponent,
     DatabaseInformationDialogComponent,
     ExtensionInfoDialogComponent,
     CytoscapeComponent,
+    ActivityListViewerComponent,
+    ActivityCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +67,7 @@ import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
     ReactiveComponentModule,
+    EffectsModule.forRoot([CoreEffects]),
   ],
   providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
   entryComponents: [LoginDialogComponent, DatabaseInformationDialogComponent, ExtensionInfoDialogComponent],

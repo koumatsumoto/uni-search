@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebContents, Word } from '../../models/core';
+import { Activity, WebContents, Word } from '../../models/core';
 import { Neo4jConnectionService } from './neo4j-connection.service';
 import { getSingleNode, getSingleRelationship, returnFirstOrNull } from './util';
 
@@ -95,6 +95,21 @@ export class Neo4jRepositoryService {
     const node = record.get(0);
 
     return node;
+  }
+
+  async createActivity(value: { name: string }) {
+    const query = `CREATE (n:Activity { name: $name, time: timestamp(), location: '' }) RETURN n;`;
+    const result = await this.neo4j.createSession().run(query, value);
+
+    const record = result.records[0];
+    return getSingleNode<Activity>(record);
+  }
+
+  async findActivities() {
+    const query = `MATCH (n:Activity) RETURN n;`;
+    const result = await this.neo4j.createSession().run(query);
+
+    return result.records.map((r) => getSingleNode(r) as Activity); // TODO: bad type assertion
   }
 
   async getAll() {

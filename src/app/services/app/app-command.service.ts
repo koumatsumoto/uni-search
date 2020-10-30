@@ -74,4 +74,13 @@ export class AppCommandService {
   viewDashboard() {
     this.store.dispatch(coreStore.switchView('dashboard'));
   }
+
+  async startActivity() {
+    const name = `${new Date().toISOString()}`;
+
+    this.store.dispatch(coreStore.actions.createActivity(name));
+    await this.repository.createActivity({ name });
+    const activities = await this.repository.findActivities();
+    this.store.dispatch(coreStore.actions.setActivityLog(activities));
+  }
 }

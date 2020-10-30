@@ -16,6 +16,8 @@ import { Neo4jAuthService } from './services/neo4j/neo4j-auth.service';
 })
 export class AppComponent implements OnInit {
   readonly viewType = this.queryService.viewType;
+  readonly contentsList = this.queryService.searchResultList;
+  readonly activities = this.queryService.activities;
 
   constructor(
     private readonly queryService: AppQueryService,

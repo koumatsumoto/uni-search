@@ -23,9 +23,9 @@ export class ChromeExtensionManagerService {
     const expiration = Number(getContentScriptExpiration());
 
     if (expiration && Date.now() < expiration) {
-      this.store.dispatch(coreStore.updateExtensionStatus({ isWorking: true, expiration }));
+      this.store.dispatch(coreStore.actions.updateAppStatus({ chromeExtensionWorking: true }));
     } else {
-      this.store.dispatch(coreStore.updateExtensionStatus({ isWorking: false, expiration }));
+      this.store.dispatch(coreStore.actions.updateAppStatus({ chromeExtensionWorking: false }));
       this.store.dispatch(coreStore.requestDialogOpen({ type: 'extension-info', time: Date.now() }));
     }
   }
