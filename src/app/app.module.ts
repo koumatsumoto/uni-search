@@ -25,7 +25,7 @@ import { DatabaseInformationDialogComponent } from './components/dialogs/databas
 import { ExtensionInfoDialogComponent } from './components/dialogs/extension-info-dialog/extension-info-dialog.component';
 import { LoginDialogComponent } from './components/dialogs/login-dialog/login-dialog.component';
 import { SearchBoxComponent } from './components/search-box/search-box.component';
-import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
+import { ContentsListCardComponent } from './components/contents-list-card/contents-list-card.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import { CoreEffects } from './store/core.effects';
@@ -36,7 +36,7 @@ import { ActivityCardComponent } from './components/activity-card/activity-card.
   declarations: [
     AppComponent,
     SearchBoxComponent,
-    SearchResultCardComponent,
+    ContentsListCardComponent,
     BrowserComponent,
     ToolbarComponent,
     LoginDialogComponent,

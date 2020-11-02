@@ -1,11 +1,11 @@
 <div class="main-area">
   <div class="search-result-list">
-    <app-search-result-card
+    <app-contents-list-card
       class="card"
       *ngFor="let data of contents; trackBy: trackByFn"
       [data]="data"
       (clicked)="onItemSelect($event)"
-    ></app-search-result-card>
+    ></app-contents-list-card>
   </div>
 </div>
 <div class="sub-area">

@@ -8,7 +8,7 @@ import { AppQueryService } from '../../../services/app/app-query.service';
   styleUrls: ['./extension-info-dialog.component.scss'],
 })
 export class ExtensionInfoDialogComponent {
-  readonly isWorking = this.queryService.isChromeExtensionWorking;
+  readonly isNotWorking = this.queryService.isChromeExtensionNotWorking;
 
   constructor(private readonly queryService: AppQueryService, private readonly dialogRef: MatDialogRef<ExtensionInfoDialogComponent>) {}
 

@@ -1,5 +1,5 @@
 import { findOrFail } from '../../../libs/dom';
-import { GoogleSearchResult } from '../../models/core';
+import { SearchResult } from '../../models/core';
 import { googleSearchResultSelectors } from './dom-selector';
 
 const extract = (element: HTMLElement) => {
@@ -12,7 +12,7 @@ const extract = (element: HTMLElement) => {
     title: title.innerText,
     description: description.innerText,
     domain: url.hostname,
-    url: url.href,
+    uri: url.href,
   } as const;
 };
 
@@ -32,7 +32,7 @@ export const extractResult = (html: string) => {
     throw new Error('InvalidHtmlError');
   }
 
-  const success: GoogleSearchResult[] = [];
+  const success: SearchResult[] = [];
   const error: Error[] = [];
   const ignore: { reason: string }[] = [];
   try {

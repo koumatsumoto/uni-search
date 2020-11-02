@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { BrowseOption } from '../../models/core';
+import { Contents } from '../../models/neo4j';
 import { AppCommandService } from '../../services/app/app-command.service';
 
 @Component({
@@ -8,12 +8,12 @@ import { AppCommandService } from '../../services/app/app-command.service';
   styleUrls: ['./contents-list-viewer.component.scss'],
 })
 export class ContentsListViewerComponent {
-  @Input() contents: BrowseOption[] = [];
+  @Input() contents: Contents[] = [];
 
   constructor(private readonly commandService: AppCommandService) {}
 
-  async onItemSelect(data: BrowseOption) {
-    await this.commandService.selectSearchResult(data);
+  async onItemSelect(data: Contents) {
+    await this.commandService.viewContents(data);
   }
 
   trackByFn(index: number) {

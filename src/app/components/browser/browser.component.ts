@@ -28,7 +28,7 @@ export class BrowserComponent implements OnInit {
   }
 
   private changeBrowseTarget(item: BrowseRequest) {
-    if (item.url === this.currentSource) {
+    if (item.uri === this.currentSource) {
       return;
     }
 
@@ -38,17 +38,17 @@ export class BrowserComponent implements OnInit {
       currentIframe.style.display = 'none';
     }
 
-    const toView = this.iframes.get(item.url);
-    this.currentSource = item.url;
+    const toView = this.iframes.get(item.uri);
+    this.currentSource = item.uri;
     // use cache if exists
     if (toView) {
       toView.style.display = 'block';
     } else {
-      const iframe = createIframe(item.url, () => {
+      const iframe = createIframe(item.uri, () => {
         // console.log('[dev] loading false');
       });
       this.elementRef.nativeElement.appendChild(iframe);
-      this.iframes.set(item.url, iframe);
+      this.iframes.set(item.uri, iframe);
     }
   }
 }

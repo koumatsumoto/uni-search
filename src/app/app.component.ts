@@ -10,7 +10,7 @@ import * as coreStore from './store/core.store';
 })
 export class AppComponent implements OnInit {
   readonly viewType = this.queryService.viewType;
-  readonly contentsList = this.queryService.searchResultList;
+  readonly contentsList = this.queryService.contents;
   readonly activities = this.queryService.activities;
 
   constructor(private readonly queryService: AppQueryService, private readonly store: Store<coreStore.AppState>) {}

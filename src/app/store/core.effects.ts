@@ -65,8 +65,10 @@ export class CoreEffects {
     () =>
       this.store.pipe(
         select(coreStore.selectors.selectAppState),
-        first((state) => state.neo4jWorking === true && state.chromeExtensionWorking === true),
-        tap(() => this.command.startActivity()),
+        first((state) => state.appComponentInitialized === true && state.neo4jWorking === true && state.chromeExtensionWorking === true),
+        tap(() => {
+          this.command.startActivity();
+        }),
       ),
     noDispatchAction,
   );

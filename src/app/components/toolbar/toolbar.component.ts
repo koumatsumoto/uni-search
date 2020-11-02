@@ -10,7 +10,7 @@ export class ToolbarComponent {
   constructor(private readonly service: AppCommandService) {}
 
   onSearchBoxSubmit(text: string) {
-    this.service.search(text);
+    this.service.startExplore(text);
   }
 
   async onDatabaseButtonClick() {

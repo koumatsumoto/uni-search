@@ -24,6 +24,6 @@ export class DatabaseInformationDialogComponent implements OnInit {
 
   async onResetButtonClick() {
     await this.commandService.resetDatabase();
-    this.dialogRef.close();
+    window.location.reload();
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Neo4jAuth } from '../../models/core';
+import { Neo4jAuth } from '../../models/neo4j';
 import { StorageService } from './storage.service';
 
 const storageKeys = {
@@ -18,9 +18,5 @@ export class AppStorageService {
 
   loadNeo4jAuth() {
     return this.storage.get<Neo4jAuth>(storageKeys.neo4jAuth);
-  }
-
-  resetNeo4jAuth() {
-    return this.storage.remove(storageKeys.neo4jAuth);
   }
 }
