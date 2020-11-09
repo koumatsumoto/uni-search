@@ -25,6 +25,7 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LOCAL_STORAGE } from './services/storage/storage.service';
 import * as coreStore from './store/core.store';
+import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import * as coreStore from './store/core.store';
     SidenavComponent,
     DatabaseInformationDialogComponent,
     ExtensionInfoDialogComponent,
+    CytoscapeComponent,
   ],
   imports: [
     BrowserModule,
