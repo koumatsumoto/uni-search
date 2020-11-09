@@ -2,7 +2,10 @@ $height-header: 60px;
 $height-app-main-content: calc(100vh - #{$height-header});
 $width-main-left-column-max: 360px;
 
-:host {
+.outermost-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   font-size: 14px;
   display: grid;
   grid-template-rows: $height-header 1fr;
@@ -32,7 +35,12 @@ $width-main-left-column-max: 360px;
 .main {
   grid-area: main;
   position: relative;
+  display: flex;
   min-height: $height-app-main-content;
   max-height: $height-app-main-content;
   overflow: hidden;
+
+  & > * {
+    flex: 1;
+  }
 }

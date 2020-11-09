@@ -16,4 +16,12 @@ export class ToolbarComponent {
   async onDatabaseButtonClick() {
     this.service.openDatabaseInfoDialog();
   }
+
+  onDashboardMenuClick() {
+    this.service.viewDashboard();
+  }
+
+  onExplorerMenuClick() {
+    this.service.viewExplorer();
+  }
 }

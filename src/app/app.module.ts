@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveComponentModule } from '@ngrx/component';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
@@ -59,6 +60,7 @@ import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
       maxAge: 30, // Retains last 30 states
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
+    ReactiveComponentModule,
   ],
   providers: [{ provide: LOCAL_STORAGE, useValue: window.localStorage }],
   entryComponents: [LoginDialogComponent, DatabaseInformationDialogComponent, ExtensionInfoDialogComponent],

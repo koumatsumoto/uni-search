@@ -1,3 +1,9 @@
-<app-toolbar class="header"></app-toolbar>
-<app-sidenav class="sidenav"></app-sidenav>
-<app-browser class="main"></app-browser>
+<div class="outermost-container">
+  <app-toolbar class="header"></app-toolbar>
+  <app-sidenav class="sidenav"></app-sidenav>
+
+  <main class="main" [ngSwitch]="viewType | ngrxPush">
+    <app-browser *ngSwitchCase="'explorer'"></app-browser>
+    <app-cytoscape *ngSwitchCase="'dashboard'"></app-cytoscape>
+  </main>
+</div>

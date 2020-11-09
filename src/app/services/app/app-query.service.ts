@@ -19,6 +19,10 @@ const makeBrowseOption = (searchResult: GoogleSearchResult, contentsMap: Map<str
   providedIn: 'root',
 })
 export class AppQueryService {
+  get viewType() {
+    return this.store.pipe(select(coreStore.selectViewType), filter(isNotNull));
+  }
+
   get searchResults() {
     return this.store.pipe(select(coreStore.selectSearchResults), filter(isNotNull));
   }
