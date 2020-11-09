@@ -19,8 +19,8 @@ export class Neo4jInitializeService {
   }
 
   private async initializeIndexes() {
-    await ignoreError(() => this.neo4j.createSession().run('DROP INDEX ON:WebContents(uri)'));
-    await ignoreError(() => this.neo4j.createSession().run('CREATE CONSTRAINT ON (n:WebContents) ASSERT n.uri IS UNIQUE;'));
+    await ignoreError(() => this.neo4j.createSession().run('DROP INDEX ON:Contents(uri)'));
+    await ignoreError(() => this.neo4j.createSession().run('CREATE CONSTRAINT ON (n:Contents) ASSERT n.uri IS UNIQUE;'));
   }
 
   private async deleteAll() {

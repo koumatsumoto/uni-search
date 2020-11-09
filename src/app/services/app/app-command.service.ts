@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { BrowseOption, GoogleSearchResult, Neo4jAuth } from '../../models/core';
+import { select, Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
+import { Contents, Neo4jAuth } from '../../models/neo4j';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { getGoogleSearchUrl, GoogleSearchService } from '../google/google-search.service';
@@ -8,11 +9,7 @@ import { Neo4jConnectionService } from '../neo4j/neo4j-connection.service';
 import { Neo4jInitializeService } from '../neo4j/neo4j-initialize.service';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
-
-const toWebContents = (searchResult: GoogleSearchResult) => ({
-  ...searchResult,
-  uri: searchResult.url,
-});
+import { isNotNull } from '../util/functions';
 
 @Injectable({
   providedIn: 'root',
@@ -27,21 +24,16 @@ export class AppCommandService {
     private readonly neo4jInitializeService: Neo4jInitializeService,
   ) {}
 
-  async search(text: string) {
-    this.store.dispatch(coreStore.searchWord(text));
-    await this.repository.updateWord({ uri: text, name: text });
-    this.store.dispatch(coreStore.browserRequest({ url: getGoogleSearchUrl(text) }));
+  async startExplore(text: string) {
+    // show google search result page first
+    this.store.dispatch(coreStore.actions.openBrowser({ uri: getGoogleSearchUrl(text) }));
 
-    const results = await this.googleSearchService.search(text);
-    this.store.dispatch(coreStore.resetSearchResults(results));
+    const searchResults = await this.googleSearchService.search(text);
+    const activity = await this.store.pipe(select(coreStore.selectors.selectCurrentActivity), first(isNotNull)).toPromise();
+    const result = await this.repository.startSearch({ uri: text, name: text }, activity.id, searchResults);
 
-    const contents = await Promise.all(results.map((item) => this.repository.updateWebContentsForSearchResult(toWebContents(item))));
-    this.store.dispatch(coreStore.updateWebContents(contents));
-
-    await Promise.all([contents.map((c) => this.repository.addRelationship({ wordUri: text, contentsUri: c.uri }))]);
-
-    const data = await this.repository.getAll();
-    console.log('[dev] all data', data);
+    this.store.dispatch(coreStore.actions.resetContents(result.contents));
+    this.store.dispatch(coreStore.actions.setCurrentSearch(result.search));
   }
 
   submitLoginForm(value: Neo4jAuth) {
@@ -49,14 +41,12 @@ export class AppCommandService {
     this.neo4j.connect(value);
   }
 
-  async selectSearchResult(item: BrowseOption) {
-    await this.browse(item);
-  }
+  async viewContents(target: Contents) {
+    this.store.dispatch(coreStore.actions.openBrowser(target));
 
-  async browse(value: BrowseOption) {
-    this.store.dispatch(coreStore.browserRequest(value));
-    const contents = await this.repository.updateWebContentsForBrowse({ ...value, uri: value.url });
-    this.store.dispatch(coreStore.updateWebContents([contents]));
+    const search = await this.store.pipe(select(coreStore.selectors.selectCurrentSearch), first(isNotNull)).toPromise();
+    const contents = await this.repository.startView(target, search);
+    this.store.dispatch(coreStore.actions.updateOneContents(contents));
   }
 
   openDatabaseInfoDialog() {
@@ -75,12 +65,12 @@ export class AppCommandService {
     this.store.dispatch(coreStore.switchView('dashboard'));
   }
 
-  async startActivity() {
+  startActivity() {
     const name = `${new Date().toISOString()}`;
 
-    this.store.dispatch(coreStore.actions.createActivity(name));
-    await this.repository.createActivity({ name });
-    const activities = await this.repository.findActivities();
-    this.store.dispatch(coreStore.actions.setActivityLog(activities));
+    Promise.all([this.repository.createActivity({ name }), this.repository.findActivities()]).then(([activity, activities]) => {
+      this.store.dispatch(coreStore.actions.setCurrentActivity(activity));
+      this.store.dispatch(coreStore.actions.setActivityLog(activities));
+    });
   }
 }

@@ -1,28 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Activity, WebContents, Word } from '../../models/core';
+import Transaction from 'neo4j-driver/types/transaction';
+import { Activity, Contents, Search, Word } from '../../models/neo4j';
 import { Neo4jConnectionService } from './neo4j-connection.service';
 import { getSingleNode, getSingleRelationship, returnFirstOrNull } from './util';
-
-// TODO
-// tslint:disable-next-line
-const toContents = (node: any): WebContents => ({
-  uri: node.properties.uri,
-  domain: node.properties.domain,
-  title: node.properties.title,
-  searchHitCount: node.properties.searchHitCount?.toNumber() ?? 0,
-  browseCount: node.properties.browseCount?.toNumber() ?? 0,
-  createdAt: node.properties.createdAt?.toNumber(),
-  updatedAt: node.properties.updatedAt?.toNumber(),
-});
-
-// tslint:disable-next-line
-const toWord = (node: any): Word => ({
-  uri: node.properties.uri,
-  name: node.properties.domain,
-  searchCount: node.properties.browseCount?.toNumber() ?? 0,
-  createdAt: node.properties.createdAt?.toNumber(),
-  updatedAt: node.properties.updatedAt?.toNumber(),
-});
 
 @Injectable({
   providedIn: 'root',
@@ -37,37 +17,77 @@ export class Neo4jRepositoryService {
     return returnFirstOrNull(result.records) as { low: number; high: number };
   }
 
-  async updateWebContentsForSearchResult(value: Pick<WebContents, 'uri' | 'title' | 'domain'>): Promise<WebContents> {
-    const query = `
-      MERGE (n: WebContents {uri: $uri})
-        ON CREATE SET n = { title: $title, domain: $domain, createdAt: timestamp(), updatedAt: timestamp(), searchHitCount: 1, browseCount: 0, uri: $uri }
-        ON MATCH SET n += { title: $title, domain: $domain, updatedAt: timestamp(), searchHitCount: n.searchHitCount + 1 }
-      RETURN n;
-    `;
+  async startView(contents: Contents, search: Search) {
+    const session = this.neo4j.createSession();
+    const tx = session.beginTransaction();
 
-    const result = await this.neo4j.createSession().run(query, value);
-    const record = result.records[0];
-    const node = record.get(0);
+    try {
+      const [updatedContents] = await Promise.all([
+        this.incrementBrowseCount(contents),
+        this.createRelationshipForView({ searchId: search.id, contentsId: contents.id }),
+      ]);
+      await tx.commit();
 
-    return toContents(node);
+      return updatedContents;
+    } catch (e) {
+      await tx.rollback();
+      throw e;
+    }
   }
 
-  async updateWebContentsForBrowse(value: Pick<WebContents, 'uri' | 'title' | 'domain'>): Promise<WebContents> {
+  async incrementBrowseCount(contents: Contents): Promise<Contents> {
     const query = `
-      MERGE (n: WebContents {uri: $uri})
-        ON CREATE SET n = { title: $title, domain: $domain, createdAt: timestamp(), updatedAt: timestamp(), searchHitCount: 1, browseCount: 0, uri: $uri }
-        ON MATCH SET n += { updatedAt: timestamp(), browseCount: n.browseCount + 1 }
+      MATCH (n: Contents)
+      WHERE ID(n) = toInteger($id)
+      SET n += { updatedAt: timestamp(), browseCount: n.browseCount + 1 }
       RETURN n;
     `;
-
-    const result = await this.neo4j.createSession().run(query, value);
+    const result = await this.neo4j.createSession().run(query, contents);
     const record = result.records[0];
-    const node = record.get(0);
 
-    return toContents(node);
+    return getSingleNode<Contents>(record);
   }
 
-  async updateWord(value: Pick<Word, 'uri' | 'name'>): Promise<Word> {
+  async startSearch(
+    wordParam: Pick<Word, 'uri' | 'name'>,
+    activityId: number,
+    contentsParams: Pick<Contents, 'uri' | 'title' | 'domain'>[],
+  ) {
+    const session = this.neo4j.createSession();
+    const tx = session.beginTransaction();
+
+    let word: Word;
+    let search: Search;
+    let contents: Contents[];
+
+    // TODO: integrate two transactions
+    try {
+      word = await this.mergeWord(wordParam, tx);
+      search = await this.createSearch({ activityId }, tx);
+      contents = await this.mergeMultipleContents(contentsParams, tx);
+      await tx.commit();
+    } catch (e) {
+      await tx.rollback();
+      throw e;
+    }
+
+    const tx2 = session.beginTransaction();
+    try {
+      await this.createRelationsForSearch(
+        { activityId, searchId: search.id, wordId: word.id, contentsIds: contents.map((c) => c.id) },
+        tx2,
+      );
+      await tx2.commit();
+    } catch (e) {
+      await tx2.rollback();
+      throw e;
+    }
+
+    return { activityId, word, search, contents };
+  }
+
+  private async mergeWord(value: Pick<Word, 'uri' | 'name'>, tx?: Transaction): Promise<Word> {
+    const session = tx ?? this.neo4j.createSession();
     const query = `
       MERGE (n: Word {uri: $uri})
         ON CREATE SET n = { uri: $uri, name: $name, searchCount: 1, createdAt: timestamp(), updatedAt: timestamp() }
@@ -75,26 +95,97 @@ export class Neo4jRepositoryService {
       RETURN n;
     `;
 
-    const result = await this.neo4j.createSession().run(query, value);
+    const result = await session.run(query, value);
     const record = result.records[0];
-    const node = record.get(0);
 
-    return toWord(node);
+    return getSingleNode<Word>(record);
   }
 
-  async addRelationship(value: { wordUri: string; contentsUri: string }) {
+  private async createSearch(value: { activityId: number }, tx?: Transaction): Promise<Search> {
+    const session = tx ?? this.neo4j.createSession();
+    const query = `CREATE (s:Search) RETURN s;`;
+
+    const result = await session.run(query, value);
+    const record = result.records[0];
+
+    return getSingleNode<Search>(record);
+  }
+
+  async mergeContents(value: Pick<Contents, 'uri' | 'title' | 'domain'>, tx?: Transaction): Promise<Contents> {
+    const session = tx ?? this.neo4j.createSession();
     const query = `
-      MATCH (a: Word), (b: WebContents)
-      WHERE a.uri = $wordUri AND b.uri = $contentsUri
-      CREATE (b)-[r:SearchResult]->(a)
-      RETURN r;
+      MERGE (n:Contents {uri: $uri})
+        ON CREATE SET n = { title: $title, domain: $domain, createdAt: timestamp(), updatedAt: timestamp(), searchHitCount: 1, browseCount: 0, uri: $uri }
+        ON MATCH SET n += { title: $title, domain: $domain, updatedAt: timestamp(), searchHitCount: n.searchHitCount + 1 }
+      RETURN n;
     `;
 
-    const result = await this.neo4j.createSession().run(query, value);
+    const result = await session.run(query, value);
     const record = result.records[0];
-    const node = record.get(0);
 
-    return node;
+    return getSingleNode<Contents>(record);
+  }
+
+  async mergeMultipleContents(values: Pick<Contents, 'uri' | 'title' | 'domain'>[], tx?: Transaction): Promise<Contents[]> {
+    return Promise.all(values.map((v) => this.mergeContents(v, tx)));
+  }
+
+  async createRelationsForSearch(
+    value: { activityId: Activity['id']; wordId: Word['id']; searchId: Search['id']; contentsIds: Contents['id'][] },
+    tx?: Transaction,
+  ) {
+    const session = tx ?? this.neo4j.createSession();
+
+    // Activity -> Search
+    const relateActivityAndSearch = () =>
+      session.run(
+        `
+          MATCH (a:Activity), (b:Search)
+          WHERE ID(a) = toInteger($activityId) AND ID(b) = toInteger($searchId)
+          CREATE (a)-[r:ACT]->(b);
+        `,
+        value,
+      );
+
+    // Search -> Word
+    const relateSearchAndWord = () =>
+      session.run(
+        `
+          MATCH (a:Search), (b:Word)
+          WHERE ID(a) = toInteger($searchId) AND ID(b) = toInteger($wordId)
+          CREATE (a)-[r:TARGET]->(b);
+        `,
+        value,
+      );
+
+    // Search -> Contents
+    const relateSearchAndContents = () =>
+      Promise.all(
+        value.contentsIds.map((contentsId) =>
+          session.run(
+            `
+              MATCH (a:Search), (b:Contents)
+              WHERE ID(a) = toInteger($searchId) AND ID(b) = toInteger($contentsId)
+              CREATE (a)-[r:FIND]->(b);
+            `,
+            { searchId: value.searchId, contentsId },
+          ),
+        ),
+      );
+
+    await Promise.all([relateActivityAndSearch(), relateSearchAndWord(), relateSearchAndContents()]);
+  }
+
+  async createRelationshipForView(value: { searchId: Search['id']; contentsId: Contents['id'] }, tx?: Transaction) {
+    const session = tx ?? this.neo4j.createSession();
+    await session.run(
+      `
+        MATCH (a:Search), (b:Contents)
+        WHERE ID(a) = toInteger($searchId) AND ID(b) = toInteger($contentsId)
+        CREATE (a)-[r:VIEW]->(b);
+      `,
+      value,
+    );
   }
 
   async createActivity(value: { name: string }) {
@@ -106,7 +197,7 @@ export class Neo4jRepositoryService {
   }
 
   async findActivities() {
-    const query = `MATCH (n:Activity) RETURN n;`;
+    const query = `MATCH (n:Activity) RETURN n LIMIT 10;`;
     const result = await this.neo4j.createSession().run(query);
 
     return result.records.map((r) => getSingleNode(r) as Activity); // TODO: bad type assertion

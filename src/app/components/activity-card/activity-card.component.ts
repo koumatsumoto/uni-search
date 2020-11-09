@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Activity } from '../../models/core';
+import { Activity } from '../../models/neo4j';
 
 @Component({
   selector: 'app-activity-card',

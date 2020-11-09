@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, from } from 'rxjs';
+import { from } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { BrowseOption, GoogleSearchResult, WebContents } from '../../models/core';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
 import { isNotNull } from '../util/functions';
-
-const makeBrowseOption = (searchResult: GoogleSearchResult, contentsMap: Map<string, WebContents>): BrowseOption => {
-  const contents = contentsMap.get(searchResult.url);
-
-  return !contents ? searchResult : { ...searchResult, ...contents };
-};
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +16,8 @@ export class AppQueryService {
     return this.store.pipe(select(coreStore.selectViewType), filter(isNotNull));
   }
 
-  get searchResults() {
-    return this.store.pipe(select(coreStore.selectSearchResults), filter(isNotNull));
+  get contents() {
+    return this.store.select(coreStore.selectors.selectFoundContents);
   }
 
   get activities() {
@@ -57,13 +50,10 @@ export class AppQueryService {
     return from(this.repository.getTotalCount());
   }
 
-  get searchResultList() {
-    return combineLatest(this.searchResults, this.store.select(coreStore.selectWebContents)).pipe(
-      map(([searchResults, contents]) => searchResults.map((item) => makeBrowseOption(item, contents.dictionary))),
+  get isChromeExtensionNotWorking() {
+    return this.store.select(coreStore.selectors.selectAppStateChromeExtension).pipe(
+      filter(isNotNull),
+      map((working) => !working),
     );
-  }
-
-  get isChromeExtensionWorking() {
-    return this.store.select(coreStore.selectors.selectAppStateChromeExtension).pipe(filter(isNotNull));
   }
 }

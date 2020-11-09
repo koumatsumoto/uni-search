@@ -1,13 +1,6 @@
 import { createAction, createReducer, createSelector, on, union } from '@ngrx/store';
-import {
-  BrowseRequest,
-  ChromeExtensionStatus,
-  GoogleSearchResult,
-  ApplicationViewType,
-  WebContents,
-  ApplicationStatus,
-  Activity,
-} from '../models/core';
+import { ApplicationStatus, ApplicationViewType, BrowseRequest, ChromeExtensionStatus, SearchResult } from '../models/core';
+import { Activity, Contents, Search } from '../models/neo4j';
 
 export const storeName = 'core';
 export const initialState = {
@@ -17,16 +10,13 @@ export const initialState = {
     neo4jWorking: null,
   } as ApplicationStatus,
   viewType: 'explorer' as ApplicationViewType,
-  searchWord: '',
-  searchResults: null as GoogleSearchResult[] | null,
-  browseRequest: null as BrowseRequest | null,
+  searchResults: null as SearchResult[] | null,
+  browseRequest: null as SearchResult | null,
   dialogOpenRequest: null as { type: 'database-info' | 'login' | 'extension-info'; time: number } | null,
-  webContents: {
-    dictionary: new Map<WebContents['uri'], WebContents>(),
-    lastUpdate: Date.now(),
-  } as const,
+  contents: [] as Contents[],
+  currentSearch: null as Search | null,
   chromeExtensionStatus: null as null | ChromeExtensionStatus,
-  activity: null as Activity | null,
+  currentActivity: null as Activity | null,
   activityLog: null as null | Activity[],
 };
 export type State = Readonly<typeof initialState>;
@@ -34,29 +24,26 @@ export type AppState = { [storeName]: State };
 
 export const updateAppStatus = createAction('[App] update application status', (data: Partial<ApplicationStatus>) => ({ data }));
 export const switchView = createAction('[View] switch application view type', (type: ApplicationViewType) => ({ data: type }));
-export const searchWord = createAction('[Command] search word', (word: string) => ({ data: word }));
-export const resetSearchResults = createAction('[Search] update results', (results: GoogleSearchResult[]) => ({ data: results }));
-export const browserRequest = createAction('[Search] browse request', (value: BrowseRequest) => ({ data: value }));
+export const openBrowser = createAction('[Search] browse request', (value: BrowseRequest) => ({ data: value }));
 export const requestDialogOpen = createAction('[UI] request dialog open', (request: State['dialogOpenRequest']) => ({ data: request }));
 export const updateExtensionStatus = createAction('[Extension] update status', (status: ChromeExtensionStatus) => ({ data: status }));
-const createActivity = createAction('[Data] create new activity', (name: string) => ({ data: name }));
+const setCurrentActivity = createAction('[Data] set newly current activity', (activity: Activity) => ({ data: activity }));
 const setActivityLog = createAction('[Data] set activity log', (activities: Activity[]) => ({ data: activities }));
-export const updateWebContents = createAction('[Data] update multiple webcontents', (data: WebContents[], updateTime = Date.now()) => ({
-  data,
-  updateTime,
-}));
+const resetContents = createAction('[Data] reset contents', (data: Contents[]) => ({ data }));
+const updateOneContents = createAction('[Data] update one contents', (data: Contents) => ({ data }));
+const setCurrentSearch = createAction('[Data] set newly current search', (data: Search) => ({ data }));
 
 export const actions = {
   updateAppStatus,
   switchView,
-  searchWord,
-  resetSearchResults,
-  browserRequest,
+  openBrowser,
   requestDialogOpen,
-  updateWebContents,
   updateExtensionStatus,
-  createActivity,
+  setCurrentActivity,
   setActivityLog,
+  resetContents,
+  updateOneContents,
+  setCurrentSearch,
 };
 const actionUnion = union(actions);
 export type ActionsUnion = typeof actionUnion;
@@ -77,43 +64,40 @@ const innerReducer = createReducer(
   initialState,
   on(updateAppStatus, merge('appStatus', objectUpdateFn)),
   on(switchView, merge('viewType')),
-  on(searchWord, merge('searchWord')),
-  on(resetSearchResults, merge('searchResults')),
-  on(browserRequest, merge('browseRequest')),
+  on(openBrowser, merge('browseRequest')),
   on(requestDialogOpen, merge('dialogOpenRequest')),
   on(updateExtensionStatus, merge('chromeExtensionStatus')),
-  on(createActivity, merge('activity')),
+  on(setCurrentActivity, merge('currentActivity')),
+  on(setCurrentSearch, merge('currentSearch')),
   on(setActivityLog, merge('activityLog')),
-  on(updateWebContents, (state, action) => {
-    action.data.forEach((contents) => state.webContents.dictionary.set(contents.uri, contents));
-
-    return { ...state, webContents: { dictionary: state.webContents.dictionary, lastUpdate: action.updateTime } };
-  }),
+  on(resetContents, merge('contents')),
+  on(updateOneContents, (state, action) => ({
+    ...state,
+    contents: state.contents.map((c) => (c.id === action.data.id ? action.data : c)),
+  })),
 );
 export const reducer = (state: State, action: ActionsUnion) => innerReducer(state, action);
 
 export const selectFeatureStore = (state: AppState) => state.core;
 export const selectViewType = createSelector(selectFeatureStore, (state: State) => state.viewType);
-export const selectCommand = createSelector(selectFeatureStore, (state: State) => state.searchWord);
-export const selectSearchResults = createSelector(selectFeatureStore, (state: State) => state.searchResults);
 export const selectBrowseRequest = createSelector(selectFeatureStore, (state: State) => state.browseRequest);
 export const selectDialogOpenRequest = createSelector(selectFeatureStore, (state: State) => state.dialogOpenRequest);
-export const selectWebContents = createSelector(selectFeatureStore, (state: State) => state.webContents);
+const selectFoundContents = createSelector(selectFeatureStore, (state: State) => state.contents);
 const selectAppState = createSelector(selectFeatureStore, (state: State) => state.appStatus);
 const selectAppStateChromeExtension = createSelector(selectFeatureStore, (state: State) => state.appStatus.chromeExtensionWorking);
-const selectActivity = createSelector(selectFeatureStore, (state: State) => state.activity);
+const selectCurrentActivity = createSelector(selectFeatureStore, (state: State) => state.currentActivity);
+const selectCurrentSearch = createSelector(selectFeatureStore, (state: State) => state.currentSearch);
 const selectActivityLog = createSelector(selectFeatureStore, (state: State) => state.activityLog);
 
 // public api
 export const selectors = {
   selectViewType,
-  selectCommand,
-  selectSearchResults,
   selectBrowseRequest,
   selectDialogOpenRequest,
-  selectWebContents,
+  selectFoundContents,
   selectAppState,
-  selectActivity,
+  selectCurrentActivity,
   selectActivityLog,
   selectAppStateChromeExtension,
+  selectCurrentSearch,
 };
