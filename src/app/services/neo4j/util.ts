@@ -36,7 +36,7 @@ const makeJSObject = (obj: Record<string, unknown>) => {
   }, {} as Record<string, unknown>);
 };
 
-export const getSingleNode = <T extends object = {}>(record: neo4j.Record): AppNode<T> => {
+export const getSingleNode = <T extends object>(record: neo4j.Record): AppNode<T> => {
   const obj = record.get(0);
   const props = makeJSObject(obj.properties);
 

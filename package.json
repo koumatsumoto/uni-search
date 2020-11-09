@@ -27,6 +27,7 @@
     "@angular/router": "~10.1.0",
     "@ngrx/component": "^10.0.1",
     "@ngrx/component-store": "^10.0.1",
+    "@ngrx/effects": "^10.0.1",
     "@ngrx/store": "^10.0.0",
     "@ngrx/store-devtools": "^10.0.0",
     "@types/cytoscape": "^3.14.8",

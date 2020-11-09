@@ -1,9 +1,16 @@
 <div class="outermost-container">
   <app-toolbar class="header"></app-toolbar>
-  <app-sidenav class="sidenav"></app-sidenav>
 
-  <main class="main" [ngSwitch]="viewType | ngrxPush">
-    <app-browser *ngSwitchCase="'explorer'"></app-browser>
-    <app-cytoscape *ngSwitchCase="'dashboard'"></app-cytoscape>
-  </main>
+  <ng-container [ngSwitch]="viewType | ngrxPush">
+    <ng-container *ngSwitchCase="'explorer'">
+      <app-contents-list-viewer class="sidenav" [contents]="contentsList | ngrxPush"></app-contents-list-viewer>
+      <app-browser class="main"></app-browser>
+    </ng-container>
+    <ng-container *ngSwitchCase="'dashboard'">
+      <app-activity-list-viewer class="sidenav" [activities]="activities | ngrxPush"></app-activity-list-viewer>
+      <main class="main">
+        <app-cytoscape></app-cytoscape>
+      </main>
+    </ng-container>
+  </ng-container>
 </div>
