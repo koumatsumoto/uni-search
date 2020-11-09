@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Neo4jConnectionService } from './neo4j-connection.service';
 
-const defaultUserName = 'main user';
-
 const ignoreError = async (fn: () => Promise<unknown>) => {
   try {
     await fn();
@@ -17,20 +15,10 @@ export class Neo4jInitializeService {
 
   async resetDatabase() {
     await this.deleteAll();
-    await this.initializeUser();
     await this.initializeIndexes();
   }
 
-  private async initializeUser() {
-    const query = 'CREATE (u: User { name: $name }) RETURN u';
-    const result = await this.neo4j.createSession().run(query, { name: defaultUserName });
-
-    return result;
-  }
-
   private async initializeIndexes() {
-    await ignoreError(() => this.neo4j.createSession().run('DROP INDEX ON:USER(name)'));
-    await ignoreError(() => this.neo4j.createSession().run('CREATE CONSTRAINT ON (n:USER) ASSERT n.name IS UNIQUE;'));
     await ignoreError(() => this.neo4j.createSession().run('DROP INDEX ON:WebContents(uri)'));
     await ignoreError(() => this.neo4j.createSession().run('CREATE CONSTRAINT ON (n:WebContents) ASSERT n.uri IS UNIQUE;'));
   }

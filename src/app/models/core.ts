@@ -16,9 +16,9 @@ export type Neo4jAuth = {
 };
 
 export type WebContents = {
-  readonly title: string;
-  readonly domain: string;
   readonly uri: string;
+  readonly domain: string;
+  readonly title: string;
   readonly searchHitCount: number;
   readonly browseCount: number;
   readonly createdAt: number;
@@ -26,7 +26,11 @@ export type WebContents = {
 };
 
 export type Word = {
-  readonly value: string;
+  readonly uri: string;
+  readonly name: string;
+  readonly searchCount: number;
+  readonly createdAt: number;
+  readonly updatedAt: number;
 };
 
 export type BrowseOption = {
