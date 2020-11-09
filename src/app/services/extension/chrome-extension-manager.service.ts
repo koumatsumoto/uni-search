@@ -1,32 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import * as coreStore from '../../store/core.store';
-import { AppState } from '../../store/core.store';
+import { timer } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 const key = 'contentScriptIsEnabledUntil';
 const scriptEnableCheckInterval = 1000 * 25;
-const initialCheckDelay = 1000 * 2;
-const getContentScriptExpiration = () => document.body.dataset[key];
+const initialCheckDelay = 1000 * 3;
+
+const getContentScriptExpiration = () => Number(document.body.dataset[key]) || 0;
+const isScriptWorking = () => {
+  return Date.now() < getContentScriptExpiration();
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChromeExtensionManagerService {
-  constructor(private readonly store: Store<AppState>) {}
+  constructor() {}
 
-  start() {
-    setTimeout(() => this.check(), initialCheckDelay);
-    setInterval(() => this.check(), scriptEnableCheckInterval);
-  }
-
-  private check() {
-    const expiration = Number(getContentScriptExpiration());
-
-    if (expiration && Date.now() < expiration) {
-      this.store.dispatch(coreStore.actions.updateAppStatus({ chromeExtensionWorking: true }));
-    } else {
-      this.store.dispatch(coreStore.actions.updateAppStatus({ chromeExtensionWorking: false }));
-      this.store.dispatch(coreStore.requestDialogOpen({ type: 'extension-info', time: Date.now() }));
-    }
+  get scriptWorkingStatus() {
+    return timer(initialCheckDelay, scriptEnableCheckInterval).pipe(
+      map(() => isScriptWorking()),
+      distinctUntilChanged(),
+    );
   }
 }

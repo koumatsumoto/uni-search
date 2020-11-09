@@ -4,7 +4,7 @@ import { BrowseOption, GoogleSearchResult, Neo4jAuth } from '../../models/core';
 import * as coreStore from '../../store/core.store';
 import { AppState } from '../../store/core.store';
 import { getGoogleSearchUrl, GoogleSearchService } from '../google/google-search.service';
-import { Neo4jAuthService } from '../neo4j/neo4j-auth.service';
+import { Neo4jConnectionService } from '../neo4j/neo4j-connection.service';
 import { Neo4jInitializeService } from '../neo4j/neo4j-initialize.service';
 import { Neo4jRepositoryService } from '../neo4j/neo4j-repository.service';
 import { AppStorageService } from '../storage/app-storage.service';
@@ -23,7 +23,7 @@ export class AppCommandService {
     private readonly storage: AppStorageService,
     private readonly repository: Neo4jRepositoryService,
     private readonly googleSearchService: GoogleSearchService,
-    private readonly neo4jLoginService: Neo4jAuthService,
+    private readonly neo4j: Neo4jConnectionService,
     private readonly neo4jInitializeService: Neo4jInitializeService,
   ) {}
 
@@ -46,7 +46,7 @@ export class AppCommandService {
 
   submitLoginForm(value: Neo4jAuth) {
     this.storage.saveNeo4jAuth(value);
-    this.neo4jLoginService.tryLogin(value);
+    this.neo4j.connect(value);
   }
 
   async selectSearchResult(item: BrowseOption) {
